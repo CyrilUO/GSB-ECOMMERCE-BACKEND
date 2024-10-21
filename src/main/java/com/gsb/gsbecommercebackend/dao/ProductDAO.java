@@ -26,9 +26,36 @@ public class ProductDAO {
         return jdbcTemplate.query(sql, (rs, rowNum) -> {
             ProductBuilder builder = new ProductBuilder();
 
-            return builder.withId(rs.getInt(PRODUCT_ID))
+            return builder
+                    .withId(rs.getInt(PRODUCT_ID))
                     .withName(rs.getString(PRODUCT_NAME))
+                    .withDescription(rs.getString(PRODUCT_DESCRIPTION))
+                    .withPrice(rs.getFloat(PRODUCT_PRICE))
+                    .withStock(rs.getInt(PRODUCT_STOCK))
                     .build();
         });
     }
+
+    public Product addProduct(Product product){
+        String sql = "INSERT INTO " + PRODUCT_TABLE + " (" + PRODUCT_NAME + ", " + PRODUCT_DESCRIPTION + ", " + PRODUCT_PRICE + ", " + PRODUCT_STOCK + ") " +
+                "VALUES (?, ?, ?, ?)";
+        jdbcTemplate.update(sql, product.getProductName(), product.getProductDescription(), product.getProductPrice(), product.getProductStock());
+        return product;
+    }
+
+    public void deleteProduct(int id) {
+        String sql = "DELETE FROM " + PRODUCT_TABLE + " WHERE " + PRODUCT_ID + " = ?";
+        jdbcTemplate.update(sql, id);
+    }
+
+
+
+//    public Product updateProduct(Product product) {
+//        String sql = "UPDATE " + PRODUCT_TABLE + " SET " + PRODUCT_NAME + " = ?, " + PRODUCT_DESCRIPTION + " = ?, " + PRODUCT_PRICE + " = ?, " + PRODUCT_STOCK + " = ? " +
+//                "WHERE " + PRODUCT_ID + " = ?";
+//
+//        jdbcTemplate.update(sql, product.getProductName(), product.getProductDescription(), product.getProductPrice(), product.getProductStock(), product.getProductId());
+//        return product;
+//    }
+
 }

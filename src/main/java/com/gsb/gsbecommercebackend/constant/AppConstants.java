@@ -26,17 +26,17 @@ public class AppConstants {
         public final static String DELIVERY_ADDRESS_TABLE = "delivery_address";
         public final static String DELIVERY_ADDRESS_ID = "delivery_address_id";
         public final static String DELIVERY_ADDRESS_CITY = "delivery_address_id";
-        public final static String DELIVERY_ADDRESS_ID = "delivery_address_id";
+        public final static String DELIVERY_ADDRESS_ZIP_CODE = "delivery_address_id";
     }
 
     public static class OrderDataSource{
-        public final static String ORDER_TABLE = "order"
-        public final static String ORDER_TABLE = "order"
-        public final static String ORDER_TABLE = "order"
-        public final static String ORDER_TABLE = "order"
+        public final static String ORDER_TABLE = "order";
+//        public final static String ORDER_TABLE = "order";
+//        public final static String ORDER_TABLE = "order";
+//        public final static String ORDER_TABLE = "order";
     }
 
     public static class ItemOrder{
-        public final static String ITEM_ORDER_TABLE = "de"
+        public final static String ITEM_ORDER_TABLE = "de";
     }
 }

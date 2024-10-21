@@ -25,4 +25,18 @@ public class ProductService {
         }
         return productDAO.getAllProducts();
     }
+
+    public Product addProduct(Product product) {
+        return productDAO.addProduct(product);
+    }
+
+//    public Product updateProduct(int id, Product product){
+//        return productDAO.updateProduct(id, product);
+//    }
+
+    public void deleteProduct(int id){
+        productDAO.deleteProduct(id);
+    }
+
+
 }

@@ -8,6 +8,7 @@ public class GsbEcommerceBackendApplication {
 
     public static void main(String[] args) {
 
+
         SpringApplication.run(GsbEcommerceBackendApplication.class, args);
 
     }

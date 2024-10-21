@@ -6,7 +6,7 @@ import com.gsb.gsbecommercebackend.model.Product;
 
 public class ProductBuilder {
 
-    private Product product;
+    private final Product product;
 
     public ProductBuilder(){
         this.product = new Product();
@@ -19,6 +19,21 @@ public class ProductBuilder {
 
     public ProductBuilder withName(String name){
         this.product.setProductName(name);
+        return this;
+    }
+
+    public ProductBuilder withDescription(String description){
+        this.product.setProductDescription(description);
+        return this;
+    }
+
+    public ProductBuilder withPrice(double price){
+        this.product.setProductPrice(price);
+        return this;
+    }
+
+    public ProductBuilder withStock(int stock){
+        this.product.setProductStock(stock);
         return this;
     }
 

@@ -6,6 +6,15 @@ public class Product {
     private String productName;
     private String productDescription;
     private Double productPrice;
+    private int productStock;
+
+    public int getProductStock() {
+        return productStock;
+    }
+
+    public void setProductStock(int productStock) {
+        this.productStock = productStock;
+    }
 
     public int getProductId() {
         return productId;
