@@ -18,8 +18,6 @@ public class ProductDAO {
     @Autowired
     private JdbcTemplate jdbcTemplate;
 
-    /* Static permet d'accéder à des fonctions ou propriétés de classe n'étant pas encore instantié, ça dépend pas de l'objet*/
-
     public List<Product> getAllProducts() {
         String sql = "SELECT * FROM " + PRODUCT_TABLE;
 
@@ -49,13 +47,11 @@ public class ProductDAO {
     }
 
 
+    public Product updateProduct(Product product) {
+        String sql = "UPDATE " + PRODUCT_TABLE + " SET " + PRODUCT_NAME + " = ?, " + PRODUCT_DESCRIPTION + " = ?, " + PRODUCT_PRICE + " = ?, " + PRODUCT_STOCK + " = ? " +
+                "WHERE " + PRODUCT_ID + " = ?";
 
-//    public Product updateProduct(Product product) {
-//        String sql = "UPDATE " + PRODUCT_TABLE + " SET " + PRODUCT_NAME + " = ?, " + PRODUCT_DESCRIPTION + " = ?, " + PRODUCT_PRICE + " = ?, " + PRODUCT_STOCK + " = ? " +
-//                "WHERE " + PRODUCT_ID + " = ?";
-//
-//        jdbcTemplate.update(sql, product.getProductName(), product.getProductDescription(), product.getProductPrice(), product.getProductStock(), product.getProductId());
-//        return product;
-//    }
-
+        jdbcTemplate.update(sql, product.getProductName(), product.getProductDescription(), product.getProductPrice(), product.getProductStock(), product.getProductId());
+        return product;
+    }
 }
