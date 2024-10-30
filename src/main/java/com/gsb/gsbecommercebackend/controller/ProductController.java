@@ -13,7 +13,7 @@ import java.util.List;
 /* Pas de DAO */
 
 @RestController
-@CrossOrigin(origins = "http://localhost:5174")
+@CrossOrigin(origins = {"http://localhost:5173", "http://localhost:5174"})
 public class ProductController {
 
     @Autowired
@@ -26,8 +26,7 @@ public class ProductController {
                     ResponseEntity.status(404).build() :
                     ResponseEntity.ok(productService.getAllProducts());
         } catch (Exception e) {
-            return null;
-        }
+            return ResponseEntity.status(500).build();        }
     }
 
     @PostMapping("/products")
@@ -42,11 +41,27 @@ public class ProductController {
         }
     }
 
-//    @PutMapping("/products/{id}")
-//    public ResponseEntity<Product> updateProduct(@PathVariable int id, @RequestBody Product product) {
-//        Product updatedProduct = productService.updateProduct(id, product);
-//        return ResponseEntity.status(201).body(updatedProduct);
-//    }
+    @PutMapping("/products/{id}")
+    public ResponseEntity<Product> updateProduct(@PathVariable int id, @RequestBody Product product) {
+        // Affichage des valeurs reçues pour déboguer
+        System.out.println("ID reçu dans l'URL : " + id);
+        System.out.println("Produit reçu : " + product);
+
+        if (product.getProductId() != id) {
+            return ResponseEntity.status(400).body(null);
+        }
+
+        try {
+            Product updatedProduct = productService.updateProduct(product);
+            return ResponseEntity.status(200).body(updatedProduct);
+        } catch (Exception e) {
+            System.out.println("Erreur lors de la mise à jour du produit : " + e.getMessage());
+            return ResponseEntity.status(404).body(null);
+        }
+    }
+
+
+
 
     @DeleteMapping("/products/{id}")
     public ResponseEntity<Product> deleteProduct(@PathVariable int id) {

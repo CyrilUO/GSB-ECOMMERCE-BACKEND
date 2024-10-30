@@ -30,9 +30,9 @@ public class ProductService {
         return productDAO.addProduct(product);
     }
 
-//    public Product updateProduct(int id, Product product){
-//        return productDAO.updateProduct(id, product);
-//    }
+    public Product updateProduct(Product product){
+        return productDAO.updateProduct(product);
+    }
 
     public void deleteProduct(int id){
         productDAO.deleteProduct(id);

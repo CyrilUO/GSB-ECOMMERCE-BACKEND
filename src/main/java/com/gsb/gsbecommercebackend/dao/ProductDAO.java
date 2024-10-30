@@ -1,6 +1,5 @@
 package com.gsb.gsbecommercebackend.dao;
 
-import com.gsb.gsbecommercebackend.constant.AppConstants;
 import com.gsb.gsbecommercebackend.model.Product;
 import com.gsb.gsbecommercebackend.model.builder.ProductBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,7 +33,7 @@ public class ProductDAO {
         });
     }
 
-    public Product addProduct(Product product){
+    public Product addProduct(Product product) {
         String sql = "INSERT INTO " + PRODUCT_TABLE + " (" + PRODUCT_NAME + ", " + PRODUCT_DESCRIPTION + ", " + PRODUCT_PRICE + ", " + PRODUCT_STOCK + ") " +
                 "VALUES (?, ?, ?, ?)";
         jdbcTemplate.update(sql, product.getProductName(), product.getProductDescription(), product.getProductPrice(), product.getProductStock());
@@ -51,7 +50,12 @@ public class ProductDAO {
         String sql = "UPDATE " + PRODUCT_TABLE + " SET " + PRODUCT_NAME + " = ?, " + PRODUCT_DESCRIPTION + " = ?, " + PRODUCT_PRICE + " = ?, " + PRODUCT_STOCK + " = ? " +
                 "WHERE " + PRODUCT_ID + " = ?";
 
-        jdbcTemplate.update(sql, product.getProductName(), product.getProductDescription(), product.getProductPrice(), product.getProductStock(), product.getProductId());
+        int rowsAffected = jdbcTemplate.update(sql, product.getProductName(), product.getProductDescription(), product.getProductPrice(), product.getProductStock(), product.getProductId());
+
+        if (rowsAffected == 0) {
+            throw new RuntimeException("Échec de la mise à jour : aucun produit avec l'ID " + product.getProductId() + " n'a été trouvé.");
+        }
+
         return product;
     }
 }

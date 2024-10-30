@@ -27,7 +27,7 @@ public class ProductBuilder {
         return this;
     }
 
-    public ProductBuilder withPrice(double price){
+    public ProductBuilder withPrice(float price){
         this.product.setProductPrice(price);
         return this;
     }

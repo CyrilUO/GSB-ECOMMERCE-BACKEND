@@ -5,11 +5,15 @@ public class Product {
     private int productId;
     private String productName;
     private String productDescription;
-    private Double productPrice;
+    private Float productPrice;
     private int productStock;
 
     public int getProductStock() {
         return productStock;
+    }
+
+    public Product() {
+
     }
 
     public void setProductStock(int productStock) {
@@ -40,11 +44,11 @@ public class Product {
         this.productDescription = productDescription;
     }
 
-    public Double getProductPrice() {
+    public Float getProductPrice() {
         return productPrice;
     }
 
-    public void setProductPrice(Double productPrice) {
+    public void setProductPrice(Float productPrice) {
         this.productPrice = productPrice;
     }
 
