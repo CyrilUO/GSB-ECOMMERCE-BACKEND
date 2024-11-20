@@ -26,7 +26,8 @@ public class ProductController {
                     ResponseEntity.status(404).build() :
                     ResponseEntity.ok(productService.getAllProducts());
         } catch (Exception e) {
-            return ResponseEntity.status(500).build();        }
+            return ResponseEntity.status(500).build();
+        }
     }
 
     @PostMapping("/products")
@@ -43,7 +44,6 @@ public class ProductController {
 
     @PutMapping("/products/{id}")
     public ResponseEntity<Product> updateProduct(@PathVariable int id, @RequestBody Product product) {
-        // Affichage des valeurs reçues pour déboguer
         System.out.println("ID reçu dans l'URL : " + id);
         System.out.println("Produit reçu : " + product);
 

@@ -8,12 +8,13 @@ public class Product {
     private Float productPrice;
     private int productStock;
 
-    public int getProductStock() {
-        return productStock;
-    }
-
     public Product() {
 
+    }
+
+
+    public int getProductStock() {
+        return productStock;
     }
 
     public void setProductStock(int productStock) {

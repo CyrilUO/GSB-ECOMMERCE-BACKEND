@@ -12,7 +12,7 @@ public class AppConstants {
     }
 
     public static class UserDataSource{
-        public final static String USER_TABLE = "users";
+        public final static String USERS_TABLE = "users";
         public final static String USER_ID = "user_id";
         public final static String USER_NAME = "user_name";
         public final static String USER_SURNAME = "user_surname";
@@ -20,6 +20,7 @@ public class AppConstants {
         public final static String USER_PASSWORD = "user_password";
         public final static String USER_ROLE = "user_role";
         public final static String USER_DATE_CREATION = "user_date_creation";
+        public final static String USER_MODIFIED_AT = "user_modified_at";
     }
 
     public static class DeliveryAddressDataSource{
@@ -30,13 +31,17 @@ public class AppConstants {
     }
 
     public static class OrderDataSource{
-        public final static String ORDER_TABLE = "order";
-//        public final static String ORDER_TABLE = "order";
+//        public final static String ORDERS_TABLE = "order";
+//        public final static String ORDER_ID = "order_id";
 //        public final static String ORDER_TABLE = "order";
 //        public final static String ORDER_TABLE = "order";
     }
 
-    public static class ItemOrder{
-        public final static String ITEM_ORDER_TABLE = "de";
+    public static class orderedItemsDataSource{
+//        public final static String ORDERED_ITEMS_TABLE = "ordered_items";
+//        public final static String ORDERED_ITEMS_TABLE = "ordered_items";
+//        public final static String ORDERED_ITEMS_TABLE = "ordered_items";
+//        public final static String ORDERED_ITEMS_TABLE = "ordered_items";
+//        public final static String ORDERED_ITEMS_TABLE = "ordered_items";
     }
 }

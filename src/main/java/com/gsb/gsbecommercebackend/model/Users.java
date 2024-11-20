@@ -1,26 +1,28 @@
 package com.gsb.gsbecommercebackend.model;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 
 public class Users {
 
+    private int userId;
     private String userName;
     private String userSurname;
     private String userEmail;
     private String userPassword;
     private String userRole;
-    private Date userDateCreation;
+    private LocalDateTime userDateCreation;
+    private LocalDateTime userModifiedAt;
 
     public Users(){};
 
-    private int userID;
 
-    public int getUserID() {
-        return userID;
+
+    public int getUserId() {
+        return userId;
     }
 
-    public void setUserID(int userID) {
-        this.userID = userID;
+    public void setUserId(int userId) {
+        this.userId = userId;
     }
 
     public String getUserName() {
@@ -63,16 +65,35 @@ public class Users {
         this.userRole = userRole;
     }
 
-    public Date getUserDateCreation() {
+    public LocalDateTime getUserDateCreation() {
         return userDateCreation;
     }
 
-    public void setUserDateCreation(Date userDateCreation) {
+    public void setUserDateCreation(LocalDateTime userDateCreation) {
         this.userDateCreation = userDateCreation;
     }
 
+    public LocalDateTime getUserModifiedAt() { return userModifiedAt; }
 
+    public void setUserModifiedAt(LocalDateTime userModifiedAt) { this.userModifiedAt = userModifiedAt; }
 
+/* Note à moi même : la méthode toString redéfinie ou surcharge une méthode de la classe parent (superclass : Object)
+* Ici elle surcharge la méthode toString qui est native à l'objet, on redéfini son comportement
+* Si l'on voulait créer notre propre méthode sans override cette dernière nous aurions pu utiliser
+* String ToString() et enlever l'annotation. On peut faire de même avec les méthodes equalsTo() ou hashCode() */
+    @Override
+    public String toString() {
+        return "Users{" +
+                "userId=" + userId +
+                ", userName='" + userName + '\'' +
+                ", userSurname='" + userSurname + '\'' +
+                ", userEmail='" + userEmail + '\'' +
+                ", userPassword='" + userPassword + '\'' +
+                ", userRole='" + userRole + '\'' +
+                ", userDateCreation=" + userDateCreation +
+                ", modifiedAt=" + userModifiedAt +
+                '}';
+    }
 
 }
 
