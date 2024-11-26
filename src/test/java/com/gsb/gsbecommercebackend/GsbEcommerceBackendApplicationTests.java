@@ -9,5 +9,4 @@ class GsbEcommerceBackendApplicationTests {
     @Test
     void contextLoads() {
     }
-
 }

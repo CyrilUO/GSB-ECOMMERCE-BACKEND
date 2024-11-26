@@ -16,7 +16,6 @@ public class Users {
     public Users(){};
 
 
-
     public int getUserId() {
         return userId;
     }

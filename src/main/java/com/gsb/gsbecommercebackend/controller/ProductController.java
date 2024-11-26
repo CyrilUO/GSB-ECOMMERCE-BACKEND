@@ -37,9 +37,11 @@ public class ProductController {
             return newProduct != null
                     ? ResponseEntity.status(201).body(newProduct)
                     : ResponseEntity.status(400).body(null);
+
         } catch (Exception e) {
             return ResponseEntity.status(500).body(null);
         }
+
     }
 
     @PutMapping("/products/{id}")

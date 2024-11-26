@@ -21,6 +21,8 @@ public class UsersDAO {
 
         return jdbcTemplate.query(sql, (rs, rowNum) -> {
             UsersBuilder usersBuilder = new UsersBuilder();
+            System.out.println("SQL Parameter: " + rs + " " + rowNum);
+
 
             return usersBuilder
                     .withId(rs.getInt(USER_ID))
@@ -33,5 +35,53 @@ public class UsersDAO {
                     .withModifiedAt(rs.getTimestamp(USER_MODIFIED_AT).toLocalDateTime())
                     .build();
         });
+    }
+
+    public Users addUser(Users users) {
+        String sql = "INSERT INTO " + USERS_TABLE + " (" +
+                USER_NAME + ", " +
+                USER_SURNAME + ", " +
+                USER_EMAIL + ", " +
+                USER_PASSWORD + ", " +
+                USER_ROLE + ") " +
+                "VALUES (?, ?, ?, ?, ?)";
+
+        jdbcTemplate.update(sql,
+                users.getUserName(),
+                users.getUserSurname(),
+                users.getUserEmail(),
+                users.getUserPassword(),
+                users.getUserRole()
+        );
+
+        return users;
+    }
+
+
+
+    public Users updateUser(Users users) {
+        String sql = " UPDATE " + USERS_TABLE +
+                " SET " + USER_SURNAME + " = ?,"
+                        + USER_NAME + " = ?,"
+                        + USER_EMAIL + " = ?,"
+                        + USER_PASSWORD + " = ?,"
+                        + USER_ROLE + " = ?,"
+                        + USER_MODIFIED_AT + " = ?" +
+                "WHERE " + USER_ID + " = ?";
+        jdbcTemplate.update(sql,
+                users.getUserSurname(),
+                users.getUserName(),
+                users.getUserEmail(),
+                users.getUserPassword(),
+                users.getUserRole(),
+                users.getUserModifiedAt(),
+                users.getUserId());
+
+        return users;
+    }
+
+    public void deleteUser(int id){
+        String sql = "DELETE FROM " + USERS_TABLE + " WHERE " + USER_ID + " = ?";
+        jdbcTemplate.update(sql, id);
     }
 }

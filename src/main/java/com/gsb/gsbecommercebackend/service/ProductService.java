@@ -5,7 +5,6 @@ package com.gsb.gsbecommercebackend.service;
 
 import com.gsb.gsbecommercebackend.dao.ProductDAO;
 import com.gsb.gsbecommercebackend.model.Product;
-import org.apache.el.util.ExceptionUtils;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

@@ -22,15 +22,54 @@ public class UsersController {
             return usersService.getAllUsers().isEmpty() ?
                     ResponseEntity.status(404).build() :
                     ResponseEntity.ok(usersService.getAllUsers());
+
         } catch (Exception e) {
             System.out.println(e.getMessage());
             return ResponseEntity.status(500).build();
         }
     }
+
+    @PostMapping("/users")
+    public ResponseEntity<Users> addUser(@RequestBody Users users) {
+        try {
+
+            Users newUser = usersService.addUser(users);
+            return newUser != null
+                    ? ResponseEntity.status(200).body(newUser)
+                    : ResponseEntity.status(400).body(null);
+        } catch (Exception e){
+            System.out.println(e.getMessage());
+            return ResponseEntity.status(500).body(null);
+        }
+    }
+
+    @PutMapping("/users/{id}")
+    public ResponseEntity<Users> updateUser(@PathVariable int id, @RequestBody Users users){
+        System.out.println("ID user reçu dans l'URL : " + id);
+        System.out.println("Nom utilisateur de l'utilisateur reçu : " + users.getUserName());
+
+        if (users.getUserId() != id){
+            return ResponseEntity.status(400).body(null);
+        }
+
+        try {
+            Users updateUser = usersService.updateUser(users);
+            return ResponseEntity.status(200).body(updateUser);
+
+        } catch (Exception e) {
+            System.out.println("Erreur lors de la mise à jour de l'utilisateur : " + e.getMessage());
+
+            return ResponseEntity.status(404).body(null);
+        }
+    }
+
+    @DeleteMapping("/users/{id}")
+    public ResponseEntity<Users> deleteUser(@PathVariable int id) {
+        usersService.deleteUser(id);
+        return ResponseEntity.noContent().build();
+    }
+
 }
 
-//    @PostMapping("/users")
-//    @PutMapping("/users")
-//    @DeleteMapping("/users")
 
 

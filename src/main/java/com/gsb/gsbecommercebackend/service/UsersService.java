@@ -20,4 +20,16 @@ public class UsersService {
         return usersDAO.getAllUsers();
     }
 
+    public Users addUser(Users users) {
+        return usersDAO.addUser(users);
+    }
+
+    public Users updateUser(Users users) {
+        return usersDAO.updateUser(users);
+    }
+
+    public void deleteUser(int id) {
+        usersDAO.deleteUser(id);
+    }
+
 }
