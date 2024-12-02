@@ -47,7 +47,7 @@ public class ProductController {
     @PutMapping("/products/{id}")
     public ResponseEntity<Product> updateProduct(@PathVariable int id, @RequestBody Product product) {
         System.out.println("ID reçu dans l'URL : " + id);
-        System.out.println("Produit reçu : " + product);
+        System.out.println("Nom du produit reçu : " + product.getProductName());
 
         if (product.getProductId() != id) {
             return ResponseEntity.status(400).body(null);

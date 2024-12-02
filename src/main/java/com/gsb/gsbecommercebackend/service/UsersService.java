@@ -31,5 +31,4 @@ public class UsersService {
     public void deleteUser(int id) {
         usersDAO.deleteUser(id);
     }
-
 }
