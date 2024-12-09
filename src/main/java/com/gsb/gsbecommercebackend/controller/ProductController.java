@@ -12,8 +12,8 @@ import java.util.List;
 
 /* Pas de DAO */
 
+@RequestMapping("auth/admin")
 @RestController
-@CrossOrigin(origins = {"http://localhost:5173", "http://localhost:5174"})
 public class ProductController {
 
     @Autowired

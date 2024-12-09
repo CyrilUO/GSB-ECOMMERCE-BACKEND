@@ -3,10 +3,12 @@ package com.gsb.gsbecommercebackend.dao;
 import com.gsb.gsbecommercebackend.model.Users;
 import com.gsb.gsbecommercebackend.model.builder.UsersBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 import static com.gsb.gsbecommercebackend.constant.AppConstants.UserDataSource.*;
 
@@ -58,15 +60,14 @@ public class UsersDAO {
     }
 
 
-
     public Users updateUser(Users users) {
         String sql = " UPDATE " + USERS_TABLE +
                 " SET " + USER_SURNAME + " = ?,"
-                        + USER_NAME + " = ?,"
-                        + USER_EMAIL + " = ?,"
-                        + USER_PASSWORD + " = ?,"
-                        + USER_ROLE + " = ?,"
-                        + USER_MODIFIED_AT + " = ?" +
+                + USER_NAME + " = ?,"
+                + USER_EMAIL + " = ?,"
+                + USER_PASSWORD + " = ?,"
+                + USER_ROLE + " = ?,"
+                + USER_MODIFIED_AT + " = ?" +
                 "WHERE " + USER_ID + " = ?";
         jdbcTemplate.update(sql,
                 users.getUserSurname(),
@@ -80,8 +81,21 @@ public class UsersDAO {
         return users;
     }
 
-    public void deleteUser(int id){
+    public void deleteUser(int id) {
         String sql = "DELETE FROM " + USERS_TABLE + " WHERE " + USER_ID + " = ?";
         jdbcTemplate.update(sql, id);
     }
+
+
+    public Users findByEmail(String email) {
+        String sql = "SELECT * FROM " + USERS_TABLE + " WHERE" + USER_EMAIL + "= ? ";
+        return jdbcTemplate.queryForObject(sql, new BeanPropertyRowMapper<>(Users.class), email);
+    }
+
+    public Users findById(int id) {
+        String sql = "SELECT * FROM" + USERS_TABLE + " WHERE" + USER_ID + "= ? ";
+        return jdbcTemplate.queryForObject(sql, new BeanPropertyRowMapper<>(Users.class), id);
+    }
+
+
 }

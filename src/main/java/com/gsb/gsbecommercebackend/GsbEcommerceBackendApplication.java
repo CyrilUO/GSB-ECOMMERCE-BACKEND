@@ -11,6 +11,7 @@ public class GsbEcommerceBackendApplication {
 
         SpringApplication.run(GsbEcommerceBackendApplication.class, args);
 
+
     }
 
 }
