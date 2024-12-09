@@ -10,13 +10,13 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@CrossOrigin(origins = {"http://localhost:5173", "http://localhost:5174"})
+//@CrossOrigin(origins = {"http://localhost:5173", "http://localhost:5174"})
 public class UsersController {
 
     @Autowired
     private UsersService usersService;
 
-    @GetMapping("/users")
+    @GetMapping("/api/users")
     public ResponseEntity<List<Users>> getAllUsers() {
         try {
             return usersService.getAllUsers().isEmpty() ?
@@ -29,7 +29,7 @@ public class UsersController {
         }
     }
 
-    @PostMapping("/users")
+    @PostMapping("/api/users")
     public ResponseEntity<Users> addUser(@RequestBody Users users) {
         try {
 
@@ -43,7 +43,7 @@ public class UsersController {
         }
     }
 
-    @PutMapping("/users/{id}")
+    @PutMapping("/api/users/{id}")
     public ResponseEntity<Users> updateUser(@PathVariable int id, @RequestBody Users users){
         System.out.println("ID user reçu dans l'URL : " + id);
         System.out.println("Nom utilisateur de l'utilisateur reçu : " + users.getUserName());
@@ -63,7 +63,7 @@ public class UsersController {
         }
     }
 
-    @DeleteMapping("/users/{id}")
+    @DeleteMapping("/api/users/{id}")
     public ResponseEntity<Users> deleteUser(@PathVariable int id) {
         usersService.deleteUser(id);
         return ResponseEntity.noContent().build();

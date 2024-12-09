@@ -20,17 +20,20 @@ public class AuthController {
 
     @PostMapping("/login")
     public String login(@RequestBody AuthRequest authRequest) {
+        System.out.println("Login attempt with email: " + authRequest.getUserEmail());
+
         try {
             authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(authRequest.getUserEmail(), authRequest.getPassword())
             );
 
+            System.out.println("Authentication successful for: " + authRequest.getUserEmail());
             return jwtService.generateToken(authRequest.getUserEmail());
-
         } catch (AuthenticationException e) {
+            System.out.println("Authentication failed: " + e.getMessage());
             throw new RuntimeException("Invalid credentials");
         }
     }
 
-    //GetUserDetails
+
 }

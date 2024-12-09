@@ -18,7 +18,7 @@ public class ProductController {
     @Autowired
     private ProductService productService;
 
-    @GetMapping("/products")
+    @GetMapping("/api/products")
     public ResponseEntity<List<Product>> getAllProducts() {
         try {
             return productService.getAllProducts().isEmpty() ?
@@ -29,7 +29,7 @@ public class ProductController {
         }
     }
 
-    @PostMapping("/products")
+    @PostMapping("/api/products")
     public ResponseEntity<Product> addProduct(@RequestBody Product product) {
         try {
             Product newProduct = productService.addProduct(product);
@@ -43,7 +43,7 @@ public class ProductController {
 
     }
 
-    @PutMapping("/products/{id}")
+    @PutMapping("/api/products/{id}")
     public ResponseEntity<Product> updateProduct(@PathVariable int id, @RequestBody Product product) {
         System.out.println("ID reçu dans l'URL : " + id);
         System.out.println("Nom du produit reçu : " + product.getProductName());
@@ -64,7 +64,7 @@ public class ProductController {
 
 
 
-    @DeleteMapping("/products/{id}")
+    @DeleteMapping("/api/products/{id}")
     public ResponseEntity<Product> deleteProduct(@PathVariable int id) {
         productService.deleteProduct(id);
         return ResponseEntity.noContent().build();

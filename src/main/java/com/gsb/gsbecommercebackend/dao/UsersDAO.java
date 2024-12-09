@@ -88,12 +88,12 @@ public class UsersDAO {
 
 
     public Users findByEmail(String email) {
-        String sql = "SELECT * FROM " + USERS_TABLE + " WHERE" + USER_EMAIL + "= ? ";
+        String sql = "SELECT * FROM " + USERS_TABLE + " WHERE " + USER_EMAIL + " = ? ";
         return jdbcTemplate.queryForObject(sql, new BeanPropertyRowMapper<>(Users.class), email);
     }
 
     public Users findById(int id) {
-        String sql = "SELECT * FROM" + USERS_TABLE + " WHERE" + USER_ID + "= ? ";
+        String sql = "SELECT * FROM" + USERS_TABLE + " WHERE " + USER_ID + " = ? ";
         return jdbcTemplate.queryForObject(sql, new BeanPropertyRowMapper<>(Users.class), id);
     }
 

@@ -10,4 +10,9 @@ spring:
       name: user
       password: password
 
+  main:
+    allow-circular-references: true
+#    logging:
+#        level: DEBUG
+
 
