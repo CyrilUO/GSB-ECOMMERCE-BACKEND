@@ -11,7 +11,7 @@ import java.util.Map;
 @Service
 public class JwtService {
 
-    private final String SECRET_KEY = "w7qfDvw5OVKb8dPfBwo7dOwv2X9K7nxpj8Bt+2Ps8HQ=";
+    private final String SECRET_KEY = "";
     byte[] keyBytes = Base64.getDecoder().decode(SECRET_KEY);
     SecretKeySpec key = new SecretKeySpec(keyBytes, SignatureAlgorithm.HS256.getJcaName());
 

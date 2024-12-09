@@ -22,10 +22,10 @@ public class AuthController {
     public String login(@RequestBody AuthRequest authRequest) {
         try {
             authenticationManager.authenticate(
-                    new UsernamePasswordAuthenticationToken(authRequest.getUsername(), authRequest.getPassword())
+                    new UsernamePasswordAuthenticationToken(authRequest.getUserEmail(), authRequest.getPassword())
             );
 
-            return jwtService.generateToken(authRequest.getUsername());
+            return jwtService.generateToken(authRequest.getUserEmail());
 
         } catch (AuthenticationException e) {
             throw new RuntimeException("Invalid credentials");
