@@ -1,6 +1,5 @@
 package com.gsb.gsbecommercebackend.controller;
 
-
 import com.gsb.gsbecommercebackend.model.Users;
 import com.gsb.gsbecommercebackend.service.UsersService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,6 +8,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@RequestMapping("/api")
 @RestController
 //@CrossOrigin(origins = {"http://localhost:5173", "http://localhost:5174"})
 public class UsersController {
@@ -16,60 +16,75 @@ public class UsersController {
     @Autowired
     private UsersService usersService;
 
-    @GetMapping("/api/users")
+    @GetMapping("/users")
     public ResponseEntity<List<Users>> getAllUsers() {
+        System.out.println("Requête reçue pour GET /users");
         try {
-            return usersService.getAllUsers().isEmpty() ?
-                    ResponseEntity.status(404).build() :
-                    ResponseEntity.ok(usersService.getAllUsers());
-
+            List<Users> users = usersService.getAllUsers();
+            if (users.isEmpty()) {
+                System.out.println("Aucun utilisateur trouvé.");
+                return ResponseEntity.status(404).build();
+            } else {
+                System.out.println("Utilisateurs trouvés : " + users.size());
+                for (Users user : users) {
+                    System.out.println("Utilisateur : " + user);
+                }
+                return ResponseEntity.ok(users);
+            }
         } catch (Exception e) {
-            System.out.println(e.getMessage());
+            System.out.println("Erreur lors de la récupération des utilisateurs : " + e.getMessage());
             return ResponseEntity.status(500).build();
         }
     }
 
-    @PostMapping("/api/users")
+    @PostMapping("/users")
     public ResponseEntity<Users> addUser(@RequestBody Users users) {
+        System.out.println("Requête reçue pour POST /users avec les données : " + users);
         try {
-
             Users newUser = usersService.addUser(users);
-            return newUser != null
-                    ? ResponseEntity.status(200).body(newUser)
-                    : ResponseEntity.status(400).body(null);
-        } catch (Exception e){
-            System.out.println(e.getMessage());
+            if (newUser != null) {
+                System.out.println("Nouvel utilisateur ajouté avec succès : " + newUser);
+                return ResponseEntity.status(200).body(newUser);
+            } else {
+                System.out.println("Échec de l'ajout de l'utilisateur.");
+                return ResponseEntity.status(400).body(null);
+            }
+        } catch (Exception e) {
+            System.out.println("Erreur lors de l'ajout de l'utilisateur : " + e.getMessage());
             return ResponseEntity.status(500).body(null);
         }
     }
 
-    @PutMapping("/api/users/{id}")
-    public ResponseEntity<Users> updateUser(@PathVariable int id, @RequestBody Users users){
-        System.out.println("ID user reçu dans l'URL : " + id);
-        System.out.println("Nom utilisateur de l'utilisateur reçu : " + users.getUserName());
+    @PutMapping("/users/{id}")
+    public ResponseEntity<Users> updateUser(@PathVariable int id, @RequestBody Users users) {
+        System.out.println("Requête reçue pour PUT /users/" + id);
+        System.out.println("Données utilisateur reçues : " + users);
 
-        if (users.getUserId() != id){
+        if (users.getUserId() != id) {
+            System.out.println("Erreur : L'ID dans l'URL ne correspond pas à l'ID de l'utilisateur.");
             return ResponseEntity.status(400).body(null);
         }
 
         try {
-            Users updateUser = usersService.updateUser(users);
-            return ResponseEntity.status(200).body(updateUser);
-
+            Users updatedUser = usersService.updateUser(users);
+            System.out.println("Utilisateur mis à jour avec succès : " + updatedUser);
+            return ResponseEntity.status(200).body(updatedUser);
         } catch (Exception e) {
             System.out.println("Erreur lors de la mise à jour de l'utilisateur : " + e.getMessage());
-
             return ResponseEntity.status(404).body(null);
         }
     }
 
-    @DeleteMapping("/api/users/{id}")
+    @DeleteMapping("/users/{id}")
     public ResponseEntity<Users> deleteUser(@PathVariable int id) {
-        usersService.deleteUser(id);
-        return ResponseEntity.noContent().build();
+        System.out.println("Requête reçue pour DELETE /users/" + id);
+        try {
+            usersService.deleteUser(id);
+            System.out.println("Utilisateur supprimé avec succès : ID = " + id);
+            return ResponseEntity.noContent().build();
+        } catch (Exception e) {
+            System.out.println("Erreur lors de la suppression de l'utilisateur : " + e.getMessage());
+            return ResponseEntity.status(500).build();
+        }
     }
-
 }
-
-
-

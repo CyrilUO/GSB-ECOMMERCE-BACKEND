@@ -3,20 +3,22 @@ package com.gsb.gsbecommercebackend.authentication.dto;
 public class AuthRequest {
     private String userEmail;
     private String userPassword;
+    private String userRole;
 
     public String getUserEmail() {
         return userEmail;
     }
 
-    public void setUsername(String userEmail) {
+    public void setUserEmail(String userEmail) {
         this.userEmail = userEmail;
     }
 
-    public String getPassword() {
+    public String getUserPassword() {
         return userPassword;
     }
 
-    public void setPassword(String userPassword) {
+    public void setUserPassword(String userPassword) {
         this.userPassword = userPassword;
     }
+
 }

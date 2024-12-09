@@ -40,13 +40,21 @@ public class UsersService implements UserDetailsService {
             throw new UsernameNotFoundException("User not found with email: " + userEmail);
         }
 
+        System.out.println("Password from database: " + user.getUserPassword() + "Email from database :" + user.getUserEmail());
+        System.out.println("Loaded user: " + user.getUserEmail() + " with role: " + user.getUserRole());
+
+
+
         // Créer un objet UserDetails avec les informations de l'utilisateur
         return User.builder()
                 .username(user.getUserEmail())
-                .password(user.getUserPassword()) // Le mot de passe doit être encodé
-                .roles("ROLE_" + user.getUserRole()) // Charger les rôles depuis la colonne `userRole`
+                .password(user.getUserPassword()) // Encodé en BCrypt
+                .roles(user.getUserRole().replace("ROLE_", "")) // Sans "ROLE_" ici
                 .build();
+
     }
+
+
 
 
     public Users addUser(Users users) {

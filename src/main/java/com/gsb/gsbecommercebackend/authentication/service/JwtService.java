@@ -20,11 +20,12 @@ public class JwtService {
             .setSigningKey(key)
             .build();
 
-    public String generateToken(String userId) {
+    public String generateToken(String userId, String userRole) {
         long EXPIRATION_TIME = 86400000;
 
         return Jwts.builder()
                 .setSubject(userId)
+                .claim("userRole", userRole)
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis() + EXPIRATION_TIME))
                 .signWith(key, SignatureAlgorithm.HS256)

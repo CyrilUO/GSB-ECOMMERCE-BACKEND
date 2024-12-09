@@ -9,7 +9,7 @@ public class PasswordEncoderUtils {
     @PostConstruct
     public void printEncodedPassword() {
         BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
-        String rawPassword = "password123";
+        String rawPassword = "Elen.Dbz";
         String encodedPassword = encoder.encode(rawPassword);
         System.out.println("Encoded password for 'password123': " + encodedPassword);
     }
