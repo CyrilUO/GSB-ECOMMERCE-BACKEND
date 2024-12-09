@@ -11,6 +11,7 @@ import java.util.Map;
 @Service
 public class JwtService {
 
+
     private final String SECRET_KEY = "";
     byte[] keyBytes = Base64.getDecoder().decode(SECRET_KEY);
     SecretKeySpec key = new SecretKeySpec(keyBytes, SignatureAlgorithm.HS256.getJcaName());
@@ -39,7 +40,7 @@ public class JwtService {
         }
     }
 
-    public String extractUsername(String token) {
+    public String extractUserEmail(String token) {
         Claims claims = Jwts.parserBuilder()
                 .setSigningKey(key)
                 .build()
