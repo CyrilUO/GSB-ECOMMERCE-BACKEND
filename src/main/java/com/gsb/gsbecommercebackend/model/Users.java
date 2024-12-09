@@ -15,6 +15,16 @@ public class Users {
 
     public Users(){};
 
+    public Users(int i, String john, String doe, String mail, String password123, String admin, LocalDateTime now, LocalDateTime now1) {
+        this.userId = i;
+        this.userName = john;
+        this.userSurname = doe;
+        this.userEmail = mail;
+        this.userPassword = password123;
+        this.userRole = admin;
+        this.userDateCreation = now;
+        this.userModifiedAt = now1;
+    }
 
     public int getUserId() {
         return userId;
@@ -76,10 +86,10 @@ public class Users {
 
     public void setUserModifiedAt(LocalDateTime userModifiedAt) { this.userModifiedAt = userModifiedAt; }
 
-/* Note à moi même : la méthode toString redéfinie ou surcharge une méthode de la classe parent (superclass : Object)
-* Ici elle surcharge la méthode toString qui est native à l'objet, on redéfini son comportement
-* Si l'on voulait créer notre propre méthode sans override cette dernière nous aurions pu utiliser
-* String ToString() et enlever l'annotation. On peut faire de même avec les méthodes equalsTo() ou hashCode() */
+    /* Note à moi même : la méthode toString redéfinie ou surcharge une méthode de la classe parent (superclass : Object)
+     * Ici elle surcharge la méthode toString qui est native à l'objet, on redéfini son comportement
+     * Si l'on voulait créer notre propre méthode sans override cette dernière nous aurions pu utiliser
+     * String ToString() et enlever l'annotation. On peut faire de même avec les méthodes equalsTo() ou hashCode() */
     @Override
     public String toString() {
         return "Users{" +

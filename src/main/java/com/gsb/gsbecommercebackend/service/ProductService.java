@@ -5,8 +5,11 @@ package com.gsb.gsbecommercebackend.service;
 
 import com.gsb.gsbecommercebackend.dao.ProductDAO;
 import com.gsb.gsbecommercebackend.model.Product;
+import com.gsb.gsbecommercebackend.model.Users;
+import jakarta.annotation.PostConstruct;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 /* La logique c'est dans les services */
 
@@ -20,7 +23,7 @@ public class ProductService {
 
     public List<Product> getAllProducts() throws Exception {
         if(productDAO.getAllProducts().isEmpty()){
-            throw new Exception();
+            throw new Exception("There is no product available");
         }
         return productDAO.getAllProducts();
     }
@@ -36,6 +39,5 @@ public class ProductService {
     public void deleteProduct(int id){
         productDAO.deleteProduct(id);
     }
-
 
 }

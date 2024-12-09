@@ -1,7 +1,6 @@
 package com.gsb.gsbecommercebackend.controller;
 
 
-//import com.gsb.gsbecommercebackend.config.SecurityConfig;
 import com.gsb.gsbecommercebackend.model.Users;
 import com.gsb.gsbecommercebackend.service.UsersService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,9 +9,8 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-
-@RequestMapping("auth/admin")
 @RestController
+@CrossOrigin(origins = {"http://localhost:5173", "http://localhost:5174"})
 public class UsersController {
 
     @Autowired

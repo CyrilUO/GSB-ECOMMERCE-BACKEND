@@ -12,7 +12,6 @@ import java.util.List;
 
 /* Pas de DAO */
 
-@RequestMapping("auth/admin")
 @RestController
 public class ProductController {
 
