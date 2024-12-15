@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 /* La logique c'est dans les services */
 
 @Service
@@ -40,4 +41,12 @@ public class ProductService {
         productDAO.deleteProduct(id);
     }
 
+
+    public List<Map<String, Object>> getCurrentProductStock() {
+        return productDAO.getCurrentProductStock();
+    }
+
+    public Product getProductById(int id) {
+        return productDAO.getProductById(id);
+    }
 }

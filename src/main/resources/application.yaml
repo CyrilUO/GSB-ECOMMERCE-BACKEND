@@ -9,7 +9,3 @@ spring:
     user:
       name: user
       password: password
-
-
-
-

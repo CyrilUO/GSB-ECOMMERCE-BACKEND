@@ -15,17 +15,6 @@ public class Users {
 
     public Users(){};
 
-    public Users(int i, String john, String doe, String mail, String password123, String admin, LocalDateTime now, LocalDateTime now1) {
-        this.userId = i;
-        this.userName = john;
-        this.userSurname = doe;
-        this.userEmail = mail;
-        this.userPassword = password123;
-        this.userRole = admin;
-        this.userDateCreation = now;
-        this.userModifiedAt = now1;
-    }
-
     public int getUserId() {
         return userId;
     }

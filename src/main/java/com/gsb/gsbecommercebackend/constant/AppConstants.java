@@ -26,22 +26,40 @@ public class AppConstants {
     public static class DeliveryAddressDataSource{
         public final static String DELIVERY_ADDRESS_TABLE = "delivery_address";
         public final static String DELIVERY_ADDRESS_ID = "delivery_address_id";
-        public final static String DELIVERY_ADDRESS_CITY = "delivery_address_id";
-        public final static String DELIVERY_ADDRESS_ZIP_CODE = "delivery_address_id";
+        public final static String DELIVERY_ADDRESS_CITY = "delivery_address_city";
+        public final static String DELIVERY_ADDRESS_ZIP_CODE = "delivery_address_zip_code";
     }
 
-    public static class OrderDataSource{
-//        public final static String ORDERS_TABLE = "order";
-//        public final static String ORDER_ID = "order_id";
-//        public final static String ORDER_TABLE = "order";
-//        public final static String ORDER_TABLE = "order";
+    public static class OrderDataSource {
+        public final static String ORDERS_TABLE = "orders";                // Nom de la table
+        public final static String ORDER_ID = "order_id";                 // Clé primaire
+        public final static String USER_ID = "user_id";                   // Clé étrangère vers users
+        public final static String ORDER_STATUS = "order_status";         // Statut de la commande
+        public final static String ORDER_TOTAL_PRICE = "order_total_price"; // Prix total de la commande
+        public final static String DELIVERY_ADDRESS_ID = "delivery_address_id"; // Adresse de livraison
+        public final static String ORDER_CREATED_AT = "order_created_at"; // Date de création
+        public final static String ORDER_UPDATED_AT = "order_updated_at"; // Date de mise à jour
     }
 
-    public static class orderedItemsDataSource{
-//        public final static String ORDERED_ITEMS_TABLE = "ordered_items";
-//        public final static String ORDERED_ITEMS_TABLE = "ordered_items";
-//        public final static String ORDERED_ITEMS_TABLE = "ordered_items";
-//        public final static String ORDERED_ITEMS_TABLE = "ordered_items";
-//        public final static String ORDERED_ITEMS_TABLE = "ordered_items";
+    public static class OrderedItemsDataSource {
+        public final static String ORDERED_ITEMS_TABLE = "ordered_items";           // Nom de la table
+        public final static String ORDERED_ITEMS_ID = "ordered_items_id";          // Clé primaire
+        public final static String PRODUCT_ID = "product_id";                      // Clé étrangère vers products
+        public final static String ORDERED_ITEMS_QUANTITY = "ordered_items_quantity"; // Quantité commandée
+        public final static String ORDERED_ITEMS_UNIT_PRICE = "ordered_items_unit_price"; // Prix unitaire
+        public final static String ORDER_ID = "order_id";                          // Clé étrangère vers orders
     }
+
+    public static class Roles {
+        public final static String ADMIN = "admin";
+        public final static String MEDICAL_EMPLOYEE = "medical-employee";
+        public final static String SALESPERSON = "salesperson";
+    }
+
+    public static class OrderStatusEnum {
+        public final static String ORDER_AWAITING = "En attente";
+        public final static String ORDER_DELAYED = "Reporté";
+        public final static String ORDER_CONFIRMED = "Confirmé";
+    }
+
 }

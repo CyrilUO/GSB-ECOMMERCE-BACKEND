@@ -7,6 +7,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 
 /* Pas de DAO */
 
@@ -84,5 +86,30 @@ public class ProductController {
             return ResponseEntity.status(500).body("Erreur lors de la suppression du produit.");
         }
     }
+
+    @GetMapping("/products/stocks")
+    public ResponseEntity<List<Map<String, Object>>> getProductStockStats() {
+        try {
+            return ResponseEntity.ok(productService.getCurrentProductStock());
+
+
+        } catch (Exception e) {
+            System.out.println("Erreur lors de la suppression du produit : " + e.getMessage());
+            return ResponseEntity.status(500).body(null);
+        }
+    }
+
+    @GetMapping("products/{id}")
+    public ResponseEntity<Product> getProductById(@PathVariable("id") int id) {
+        System.out.println("Requête GET pour récupérer le produit avec ID : " + id);
+
+        Product product = productService.getProductById(id);
+        if (product != null) {
+            return ResponseEntity.ok(product);
+        } else {
+            return ResponseEntity.notFound().build(); // Retourne un 404 si le produit est introuvable
+        }
+    }
+
 
 }

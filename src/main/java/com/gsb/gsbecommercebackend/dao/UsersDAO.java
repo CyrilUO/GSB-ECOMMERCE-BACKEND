@@ -8,6 +8,8 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 
 import static com.gsb.gsbecommercebackend.constant.AppConstants.UserDataSource.*;
@@ -92,10 +94,24 @@ public class UsersDAO {
         return jdbcTemplate.queryForObject(sql, new BeanPropertyRowMapper<>(Users.class), email);
     }
 
-    public Users findById(int id) {
+    public Users findUserById(int id) {
         String sql = "SELECT * FROM" + USERS_TABLE + " WHERE " + USER_ID + " = ? ";
         return jdbcTemplate.queryForObject(sql, new BeanPropertyRowMapper<>(Users.class), id);
     }
+
+    public List<Map<String, Object>> getUsersStatByDay() {
+        String sql = "SELECT DATE(" + USER_DATE_CREATION + ") AS creation_date, COUNT(*) AS user_count " +
+                "FROM " + USERS_TABLE + " " +
+                "GROUP BY DATE(" + USER_DATE_CREATION + ") " +
+                "ORDER BY creation_date";
+
+        return jdbcTemplate.queryForList(sql);
+    }
+
+
+
+
+
 
 
 }

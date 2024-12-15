@@ -1,12 +1,16 @@
 package com.gsb.gsbecommercebackend.dao;
 
 import com.gsb.gsbecommercebackend.model.Product;
+import com.gsb.gsbecommercebackend.model.Users;
 import com.gsb.gsbecommercebackend.model.builder.ProductBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
+import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Map;
 
 import static com.gsb.gsbecommercebackend.constant.AppConstants.ProductDataSource.*;
 
@@ -58,4 +62,23 @@ public class ProductDAO {
 
         return product;
     }
+
+    public List<Map<String, Object>> getCurrentProductStock() {
+        String sql = "SELECT " + PRODUCT_NAME + ", " + PRODUCT_STOCK + " " +
+                "FROM " + PRODUCT_TABLE + " " +
+                "ORDER BY " + PRODUCT_STOCK + " ASC";
+
+        return jdbcTemplate.queryForList(sql);
+    }
+
+    public Product getProductById(int id) {
+        String sql = "SELECT * FROM " + PRODUCT_TABLE + " WHERE " + PRODUCT_ID + " = ?";
+        try {
+            return jdbcTemplate.queryForObject(sql, new BeanPropertyRowMapper<>(Product.class), id);
+        } catch (DataAccessException e) {
+            System.err.println("Erreur lors de la récupération du produit : " + e.getMessage());
+            return null;
+        }
+    }
+
 }

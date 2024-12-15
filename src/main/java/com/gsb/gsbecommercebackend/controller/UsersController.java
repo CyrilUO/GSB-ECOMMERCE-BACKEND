@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RequestMapping("/api")
 @RestController
@@ -87,4 +88,17 @@ public class UsersController {
             return ResponseEntity.status(500).build();
         }
     }
+
+    @GetMapping("/users/stats")
+    public ResponseEntity<List<Map<String, Object>>> getUserStatsByDay() {
+        System.out.println("Requête reçue pour GET /users/stats");
+        try {
+            List<Map<String, Object>> stats = usersService.getUsersStatsByDay();
+            return ResponseEntity.ok(stats);
+        } catch (Exception e) {
+            System.out.println("Erreur lors de la récupération des statistiques : " + e.getMessage());
+            return ResponseEntity.status(500).build();
+        }
+    }
+
 }

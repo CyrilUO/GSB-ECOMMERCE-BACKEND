@@ -2,6 +2,7 @@ package com.gsb.gsbecommercebackend.authentication.config;
 
 import com.gsb.gsbecommercebackend.authentication.filter.JwtAuthenticationFilter;
 import com.gsb.gsbecommercebackend.authentication.service.JwtService;
+import com.gsb.gsbecommercebackend.constant.AppConstants;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -14,6 +15,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import com.gsb.gsbecommercebackend.service.UsersService;
+import static com.gsb.gsbecommercebackend.constant.AppConstants.Roles.*;
+
 
 
 @Configuration
@@ -40,13 +43,14 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/auth/login").permitAll()
-                        .requestMatchers("/api/products").hasRole("admin")
+                        .requestMatchers("/api/**").hasAnyRole(ADMIN, MEDICAL_EMPLOYEE, SALESPERSON)
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }
+
 
     @Bean
     public PasswordEncoder passwordEncoder() {

@@ -13,6 +13,8 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 
 @Service
 public class UsersService implements UserDetailsService {
@@ -54,9 +56,6 @@ public class UsersService implements UserDetailsService {
 
     }
 
-
-
-
     public Users addUser(Users users) {
         users.setUserPassword(passwordEncoder.encode(users.getUserPassword()));
         return usersDAO.addUser(users);
@@ -68,4 +67,10 @@ public class UsersService implements UserDetailsService {
     public void deleteUser(int id) {
         usersDAO.deleteUser(id);
     }
+
+
+    public List<Map<String, Object>> getUsersStatsByDay() {
+        return usersDAO.getUsersStatByDay();
+    }
+
 }
