@@ -109,7 +109,7 @@ com.gsb.gsbecommercebackend
    ```bash
    docker-compose up --build
 
-5. **Clonez la partie front du projet et lire le README associé**
+5. **♻️ Clonez la partie front du projet et lire le README associé**
     ```bash
     git clone https://github.com/CyrilUO/GSB-ECOMMERCE-FRONT
 ---
@@ -126,9 +126,7 @@ com.gsb.gsbecommercebackend
     - 🔒 Mise en place de JWT pour l'authentification et la sécurisation des endpoints.
     - 🌐 Configuration CORS pour accepter les requêtes du frontend *(Vue.js)*.
 
-4. **Gestion du panier et commandes** 
-   - 🔒 Mise en place de JWT pour l'authentification et la sécurisation des endpoints.
-   - 🌐 Configuration CORS pour accepter les requêtes du frontend *(Vue.js)*.
+4. **Gestion du panier et commandes**
 
 5. **Analyses des données employés** 
 
