@@ -8,7 +8,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 
 @Service
@@ -40,5 +42,20 @@ public class OrderService {
 
         return orderId;
     }
+
+    public Map<String, Object> getOrderDetails(int orderId) {
+        Order order = orderDAO.getOrderById(orderId);
+        if (order == null) {
+            throw new RuntimeException("Commande non trouvée pour ID : " + orderId);
+        }
+        List<OrderedItem> orderedItems = orderedItemDAO.getOrderedItemsByOrderId(orderId);
+
+        Map<String, Object> orderDetails = new HashMap<>();
+        orderDetails.put("order", order);
+        orderDetails.put("items", orderedItems);
+
+        return orderDetails;
+    }
+
 
 }

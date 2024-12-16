@@ -15,6 +15,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 
 @Service
 public class UsersService implements UserDetailsService {
@@ -36,16 +37,11 @@ public class UsersService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String userEmail) throws UsernameNotFoundException {
         // Récupérer l'utilisateur par son e-mail
-        Users user = usersDAO.findByEmail(userEmail);
+        Users user = usersDAO.findByEmail(userEmail)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found with email: " + userEmail));
 
-        if (user == null) {
-            throw new UsernameNotFoundException("User not found with email: " + userEmail);
-        }
-
-        System.out.println("Password from database: " + user.getUserPassword() + "Email from database :" + user.getUserEmail());
+        System.out.println("Password from database: " + user.getUserPassword() + " Email from database :" + user.getUserEmail());
         System.out.println("Loaded user: " + user.getUserEmail() + " with role: " + user.getUserRole());
-
-
 
         // Créer un objet UserDetails avec les informations de l'utilisateur
         return User.builder()
@@ -53,8 +49,8 @@ public class UsersService implements UserDetailsService {
                 .password(user.getUserPassword()) // Encodé en BCrypt
                 .roles(user.getUserRole().replace("ROLE_", "")) // Sans "ROLE_" ici
                 .build();
-
     }
+
 
     public Users addUser(Users users) {
         users.setUserPassword(passwordEncoder.encode(users.getUserPassword()));
@@ -71,6 +67,10 @@ public class UsersService implements UserDetailsService {
 
     public List<Map<String, Object>> getUsersStatsByDay() {
         return usersDAO.getUsersStatByDay();
+    }
+
+    public Optional<Users> findByEmail(String email) {
+        return usersDAO.findByEmail(email);
     }
 
 }

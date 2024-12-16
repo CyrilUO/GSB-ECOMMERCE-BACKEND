@@ -2,6 +2,7 @@ package com.gsb.gsbecommercebackend.dao;
 
 import com.gsb.gsbecommercebackend.model.Order;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
@@ -37,6 +38,13 @@ public class OrderDAO {
         System.out.println("Order ID généré : " + generatedId);
 
         return (generatedId != null) ? generatedId : -1; // Retourne -1 en cas d'erreur
+    }
+
+
+    public Order getOrderById(int orderId) {
+        String sql = "SELECT * FROM " + ORDERS_TABLE + " WHERE " + ORDER_ID + "= ?";
+        return jdbcTemplate.queryForObject(sql, new BeanPropertyRowMapper<>(Order.class), orderId);
+
     }
 }
 
