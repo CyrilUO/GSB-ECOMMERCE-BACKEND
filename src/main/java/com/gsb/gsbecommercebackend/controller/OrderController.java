@@ -1,6 +1,7 @@
 package com.gsb.gsbecommercebackend.controller;
 
 
+import com.gsb.gsbecommercebackend.model.CustomUserDetails;
 import com.gsb.gsbecommercebackend.service.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -41,44 +42,61 @@ public class OrderController {
     @PostMapping("orders/create-order")
     public ResponseEntity<String> createOrder(@RequestBody Map<String, Object> payload) {
         try {
-
-            // Récupérer l'ID utilisateur connecté via le token
+            // Récupérer l'ID utilisateur depuis CustomUserDetails
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-            UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-            int userId = Integer.parseInt(userDetails.getUsername()); // Récupère l'ID utilisateur
+            CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
+            int userId = userDetails.getUserId();
 
-            int deliveryAddressId = ((Number) payload.get(DELIVERY_ADDRESS_ID)).intValue();
+            System.out.println("ID utilisateur récupéré : " + userId);
+
+            // Récupérer les valeurs depuis le payload
+            Object deliveryAddressIdObj = payload.get(DELIVERY_ADDRESS_ID);
+            if (deliveryAddressIdObj == null) {
+                throw new IllegalArgumentException("delivery_address_id manquant dans le payload !");
+            }
+            int deliveryAddressId;
+
+            if (payload.containsKey("deliveryAddressId")) { // Version camelCase
+                deliveryAddressId = ((Number) payload.get("deliveryAddressId")).intValue();
+            } else if (payload.containsKey(DELIVERY_ADDRESS_ID)) { // Version snake_case
+                deliveryAddressId = ((Number) payload.get(DELIVERY_ADDRESS_ID)).intValue();
+            } else {
+                throw new IllegalArgumentException("delivery_address_id manquant dans le payload !");
+            }
+
             float orderTotalPrice = ((Number) payload.get(ORDER_TOTAL_PRICE)).floatValue();
+
+            System.out.println("Payload reçu : " + payload);
+            System.out.println("Clé DELIVERY_ADDRESS_ID : " + DELIVERY_ADDRESS_ID);
+            System.out.println("Valeur associée : " + payload.get(DELIVERY_ADDRESS_ID));
+
 
             List<Map<String, Object>> items = (List<Map<String, Object>>) payload.get("items");
 
-            System.out.println("Payload reçu : " + payload);
-
             Order order = new Order();
             order.setUserId(userId);
-            order.setDeliveryAddressId(deliveryAddressId);
+            order.setDeliveryAddressId(deliveryAddressId); // Correction ici
             order.setOrderTotalPrice(orderTotalPrice);
             order.setOrderStatus(ORDER_AWAITING);
 
+            // Traiter les produits commandés
             List<OrderedItem> orderedItems = items.stream().map(item -> {
                 OrderedItem orderedItem = new OrderedItem();
                 orderedItem.setProductId(((Number) item.get(PRODUCT_ID)).intValue());
                 orderedItem.setOrderedItemsQuantity(((Number) item.get(ORDERED_ITEMS_QUANTITY)).intValue());
                 orderedItem.setOrderedItemsUnitPrice(((Number) item.get(ORDERED_ITEMS_UNIT_PRICE)).floatValue());
-
                 return orderedItem;
             }).toList();
 
             int orderId = orderService.createOrderWithItems(order, orderedItems);
-            return ResponseEntity.ok("Commande créée avec succès. L'id est : " + orderId);
-
+            return ResponseEntity.ok("Commande créée avec succès. L'ID de la commande est : " + orderId);
 
         } catch (Exception e) {
-            e.printStackTrace(); // Affiche l'erreur complète dans les logs
-
-            return ResponseEntity.status(500).body("Erreur lors de la créa de commande");
+            e.printStackTrace();
+            return ResponseEntity.status(500).body("Erreur lors de la création de la commande");
         }
     }
+
 }
 
 

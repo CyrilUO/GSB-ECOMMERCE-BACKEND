@@ -1,8 +1,10 @@
 package com.gsb.gsbecommercebackend.service;
 
 import com.gsb.gsbecommercebackend.dao.UsersDAO;
+import com.gsb.gsbecommercebackend.model.CustomUserDetails;
 import com.gsb.gsbecommercebackend.model.Users;
 import jakarta.annotation.PostConstruct;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -43,13 +45,15 @@ public class UsersService implements UserDetailsService {
         System.out.println("Password from database: " + user.getUserPassword() + " Email from database :" + user.getUserEmail());
         System.out.println("Loaded user: " + user.getUserEmail() + " with role: " + user.getUserRole());
 
-        // Créer un objet UserDetails avec les informations de l'utilisateur
-        return User.builder()
-                .username(user.getUserEmail())
-                .password(user.getUserPassword()) // Encodé en BCrypt
-                .roles(user.getUserRole().replace("ROLE_", "")) // Sans "ROLE_" ici
-                .build();
+        // Retourner un CustomUserDetails avec l'ID utilisateur
+        return new CustomUserDetails(
+                user.getUserId(),
+                user.getUserEmail(),
+                user.getUserPassword(),
+                List.of(new SimpleGrantedAuthority("ROLE_" + user.getUserRole()))
+        );
     }
+
 
 
     public Users addUser(Users users) {

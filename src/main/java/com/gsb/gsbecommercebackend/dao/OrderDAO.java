@@ -36,8 +36,11 @@ public class OrderDAO {
         // Récupérer l'ID généré
         Integer generatedId = jdbcTemplate.queryForObject("SELECT LAST_INSERT_ID()", Integer.class);
         System.out.println("Order ID généré : " + generatedId);
+        if (generatedId == null || generatedId == 0) {
+            throw new RuntimeException("Échec de la récupération de l'ID généré !");
+        }
 
-        return (generatedId != null) ? generatedId : -1; // Retourne -1 en cas d'erreur
+        return generatedId; // Retourne -1 en cas d'erreur
     }
 
 
