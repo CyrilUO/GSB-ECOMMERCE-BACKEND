@@ -37,8 +37,8 @@ public class AppConstants {
         public final static String ORDER_STATUS = "order_status";         // Statut de la commande
         public final static String ORDER_TOTAL_PRICE = "order_total_price"; // Prix total de la commande
         public final static String DELIVERY_ADDRESS_ID = "delivery_address_id"; // Adresse de livraison
-        public final static String ORDER_CREATED_AT = "order_created_at"; // Date de création
-        public final static String ORDER_UPDATED_AT = "order_updated_at"; // Date de mise à jour
+//        public final static String ORDER_CREATED_AT = "order_created_at"; // Date de création
+//        public final static String ORDER_UPDATED_AT = "order_updated_at"; // Date de mise à jour
     }
 
     public static class OrderedItemsDataSource {

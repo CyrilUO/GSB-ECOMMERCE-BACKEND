@@ -1,5 +1,6 @@
 package com.gsb.gsbecommercebackend.dao;
 
+import com.gsb.gsbecommercebackend.customExceptions.orders.OrderCreationException;
 import com.gsb.gsbecommercebackend.model.Order;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
@@ -11,8 +12,13 @@ import static com.gsb.gsbecommercebackend.constant.AppConstants.OrderDataSource.
 
 @Repository
 public class OrderDAO {
+
+    private final JdbcTemplate jdbcTemplate;
+
     @Autowired
-    private JdbcTemplate jdbcTemplate;
+    public OrderDAO(JdbcTemplate jdbcTemplate){
+        this.jdbcTemplate = jdbcTemplate;
+    }
 
     public Integer createOrder(Order order) {
         String sql = "INSERT INTO "
@@ -37,8 +43,9 @@ public class OrderDAO {
         Integer generatedId = jdbcTemplate.queryForObject("SELECT LAST_INSERT_ID()", Integer.class);
         System.out.println("Order ID généré : " + generatedId);
         if (generatedId == null || generatedId == 0) {
-            throw new RuntimeException("Échec de la récupération de l'ID généré !");
+            throw new OrderCreationException("Échec de la récupération de l'ID généré !");
         }
+
 
         return generatedId; // Retourne -1 en cas d'erreur
     }

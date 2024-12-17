@@ -40,6 +40,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
                 System.out.println("User Email: " + userEmail);
                 System.out.println("Roles: " + userDetails.getAuthorities());
+                System.out.println("Roles: " + userDetails.getAuthorities());
 
                 UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
                         userDetails, null, userDetails.getAuthorities());

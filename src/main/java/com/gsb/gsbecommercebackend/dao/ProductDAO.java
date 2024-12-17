@@ -18,8 +18,12 @@ import static com.gsb.gsbecommercebackend.constant.AppConstants.ProductDataSourc
 @Repository
 public class ProductDAO {
 
+    private final JdbcTemplate jdbcTemplate;
+
     @Autowired
-    private JdbcTemplate jdbcTemplate;
+    public ProductDAO(JdbcTemplate jdbcTemplate) {
+        this.jdbcTemplate = jdbcTemplate;
+    }
 
     public List<Product> getAllProducts() {
         String sql = "SELECT * FROM " + PRODUCT_TABLE;

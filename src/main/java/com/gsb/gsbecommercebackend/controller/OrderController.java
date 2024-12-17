@@ -26,6 +26,9 @@ import java.util.Map;
 @RequestMapping("/api")
 public class OrderController {
 
+    /*Injecte automatiquement une dépendance (instance de la classe OrderService) dans une
+    * autre classe géré par le contexte Spring (OrderController)
+    * Spring detecte l'annotation et va chercher dans le conteneur une instance de la classe ou un Bean pour l'injecter*/
     @Autowired
     private OrderService orderService;
 
@@ -39,6 +42,8 @@ public class OrderController {
         }
     }
 
+
+
     @PostMapping("orders/create-order")
     public ResponseEntity<String> createOrder(@RequestBody Map<String, Object> payload) {
         try {
@@ -50,52 +55,53 @@ public class OrderController {
             System.out.println("ID utilisateur récupéré : " + userId);
 
             // Récupérer les valeurs depuis le payload
-            Object deliveryAddressIdObj = payload.get(DELIVERY_ADDRESS_ID);
-            if (deliveryAddressIdObj == null) {
-                throw new IllegalArgumentException("delivery_address_id manquant dans le payload !");
+            if (!payload.containsKey("deliveryAddressId") || payload.get("deliveryAddressId") == null) {
+                throw new IllegalArgumentException("deliveryAddressId manquant dans le payload !");
             }
-            int deliveryAddressId;
+            int deliveryAddressId = ((Number) payload.get("deliveryAddressId")).intValue();
 
-            if (payload.containsKey("deliveryAddressId")) { // Version camelCase
-                deliveryAddressId = ((Number) payload.get("deliveryAddressId")).intValue();
-            } else if (payload.containsKey(DELIVERY_ADDRESS_ID)) { // Version snake_case
-                deliveryAddressId = ((Number) payload.get(DELIVERY_ADDRESS_ID)).intValue();
-            } else {
-                throw new IllegalArgumentException("delivery_address_id manquant dans le payload !");
+            if (!payload.containsKey("orderTotalPrice") || payload.get("orderTotalPrice") == null) {
+                throw new IllegalArgumentException("orderTotalPrice manquant dans le payload !");
             }
-
-            float orderTotalPrice = ((Number) payload.get(ORDER_TOTAL_PRICE)).floatValue();
+            float orderTotalPrice = ((Number) payload.get("orderTotalPrice")).floatValue();
 
             System.out.println("Payload reçu : " + payload);
-            System.out.println("Clé DELIVERY_ADDRESS_ID : " + DELIVERY_ADDRESS_ID);
-            System.out.println("Valeur associée : " + payload.get(DELIVERY_ADDRESS_ID));
 
-
+            // Récupérer les items
             List<Map<String, Object>> items = (List<Map<String, Object>>) payload.get("items");
+            if (items == null || items.isEmpty()) {
+                throw new IllegalArgumentException("La liste des items est vide ou manquante !");
+            }
 
+            System.out.println("Items : " + items);
+
+
+            // Construire l'objet Order
             Order order = new Order();
             order.setUserId(userId);
-            order.setDeliveryAddressId(deliveryAddressId); // Correction ici
+            order.setDeliveryAddressId(deliveryAddressId);
             order.setOrderTotalPrice(orderTotalPrice);
             order.setOrderStatus(ORDER_AWAITING);
 
             // Traiter les produits commandés
             List<OrderedItem> orderedItems = items.stream().map(item -> {
                 OrderedItem orderedItem = new OrderedItem();
-                orderedItem.setProductId(((Number) item.get(PRODUCT_ID)).intValue());
-                orderedItem.setOrderedItemsQuantity(((Number) item.get(ORDERED_ITEMS_QUANTITY)).intValue());
-                orderedItem.setOrderedItemsUnitPrice(((Number) item.get(ORDERED_ITEMS_UNIT_PRICE)).floatValue());
+                orderedItem.setProductId(((Number) item.get("productId")).intValue());
+                orderedItem.setOrderedItemsQuantity(((Number) item.get("orderedItemsQuantity")).intValue());
+                orderedItem.setOrderedItemsUnitPrice(((Number) item.get("orderedItemsUnitPrice")).floatValue());
                 return orderedItem;
             }).toList();
 
+            // Sauvegarder la commande
             int orderId = orderService.createOrderWithItems(order, orderedItems);
-            return ResponseEntity.ok("Commande créée avec succès. L'ID de la commande est : " + orderId);
+            return ResponseEntity.ok("L'ID de la commande est : " + orderId);
 
         } catch (Exception e) {
             e.printStackTrace();
             return ResponseEntity.status(500).body("Erreur lors de la création de la commande");
         }
     }
+
 
 }
 

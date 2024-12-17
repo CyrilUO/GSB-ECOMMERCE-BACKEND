@@ -13,8 +13,13 @@ import java.util.List;
 
 @Repository
 public class OrderedItemDAO {
+
+    private final JdbcTemplate jdbcTemplate;
+
     @Autowired
-    private JdbcTemplate jdbcTemplate;
+    public OrderedItemDAO(JdbcTemplate jdbcTemplate) {
+        this.jdbcTemplate = jdbcTemplate;
+    }
 
     public void addOrderedItem(OrderedItem item) {
         try {
@@ -26,10 +31,7 @@ public class OrderedItemDAO {
 
 
             System.out.println("Requête SQL : " + sql);
-            System.out.println("Paramètres : productId=" + item.getProductId() +
-                    ", quantity=" + item.getOrderedItemsQuantity() +
-                    ", unitPrice=" + item.getOrderedItemsUnitPrice() +
-                    ", orderId=" + item.getOrderId());
+
 
             jdbcTemplate.update(sql,
                     item.getProductId(),
@@ -37,10 +39,14 @@ public class OrderedItemDAO {
                     item.getOrderedItemsUnitPrice(),
                     item.getOrderId()
             );
-            System.out.println("Tentative d'ajout dans ordered_items : orderId=" + item.getOrderId() +
-                    ", productId=" + item.getProductId());
+            System.out.println("Insertion dans ordered_items : " +
+                    "orderId=" + item.getOrderId() +
+                    ", productId=" + item.getProductId() +
+                    ", quantity=" + item.getOrderedItemsQuantity());
+
         } catch (Exception e) {
             System.err.println("Erreur lors de l'insertion dans ordered_items : " + e.getMessage());
+            throw new RuntimeException("Insertion échouée dnas ordered_items", e);
         }
     }
 

@@ -146,4 +146,9 @@ com.gsb.gsbecommercebackend
 
 ## **🧪 Tests**
 ```
-mvn test:run
+--------------------------------
+           mvn test:run                    
+--------------------------------
+mvn -Dmaven.surefire.debug test 
+--------------------------------
+

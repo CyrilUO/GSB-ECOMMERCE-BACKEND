@@ -44,6 +44,7 @@ public class UsersService implements UserDetailsService {
 
         System.out.println("Password from database: " + user.getUserPassword() + " Email from database :" + user.getUserEmail());
         System.out.println("Loaded user: " + user.getUserEmail() + " with role: " + user.getUserRole());
+        System.out.println("Loaded user with id: " + user.getUserId());
 
         // Retourner un CustomUserDetails avec l'ID utilisateur
         return new CustomUserDetails(

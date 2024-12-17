@@ -17,8 +17,12 @@ import static com.gsb.gsbecommercebackend.constant.AppConstants.UserDataSource.*
 @Repository
 public class UsersDAO {
 
+    private final JdbcTemplate jdbcTemplate;
+
     @Autowired
-    private JdbcTemplate jdbcTemplate;
+    public UsersDAO(JdbcTemplate jdbcTemplate) {
+        this.jdbcTemplate = jdbcTemplate;
+    }
 
     public List<Users> getAllUsers() {
         String sql = " SELECT * FROM " + USERS_TABLE;
