@@ -13,4 +13,5 @@ public class PasswordEncoderUtils {
         String encodedPassword = encoder.encode(rawPassword);
         System.out.println("Encoded password for 'password123': " + encodedPassword);
     }
+
 }

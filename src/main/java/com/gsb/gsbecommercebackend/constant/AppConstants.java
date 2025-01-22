@@ -27,7 +27,9 @@ public class AppConstants {
         public final static String DELIVERY_ADDRESS_TABLE = "delivery_address";
         public final static String DELIVERY_ADDRESS_ID = "delivery_address_id";
         public final static String DELIVERY_ADDRESS_CITY = "delivery_address_city";
+        public final static String DELIVERY_ADDRESS_STREET = "delivery_address_street";
         public final static String DELIVERY_ADDRESS_ZIP_CODE = "delivery_address_zip_code";
+        public final static String DELIVERY_ADDRESS_COUNTRY = "delivery_address_country";
     }
 
     public static class OrderDataSource {
@@ -37,8 +39,8 @@ public class AppConstants {
         public final static String ORDER_STATUS = "order_status";         // Statut de la commande
         public final static String ORDER_TOTAL_PRICE = "order_total_price"; // Prix total de la commande
         public final static String DELIVERY_ADDRESS_ID = "delivery_address_id"; // Adresse de livraison
-//        public final static String ORDER_CREATED_AT = "order_created_at"; // Date de création
-//        public final static String ORDER_UPDATED_AT = "order_updated_at"; // Date de mise à jour
+        public final static String ORDER_CREATED_AT = "order_created_at"; // Date de création
+        public final static String ORDER_UPDATED_AT = "order_updated_at"; // Date de mise à jour
     }
 
     public static class OrderedItemsDataSource {
@@ -50,10 +52,19 @@ public class AppConstants {
         public final static String ORDER_ID = "order_id";                          // Clé étrangère vers orders
     }
 
-    public static class Roles {
+    public static class RolesDataSource {
+        public final static String ROLES_TABLE = "roles";
+        public final static String ROLE_ID = "role_id";
+        public final static String ROLE_NAME = "role_name";
         public final static String ADMIN = "admin";
         public final static String MEDICAL_EMPLOYEE = "medical-employee";
         public final static String SALESPERSON = "salesperson";
+    }
+
+    public static class JWTServiceParameters {
+        public final static long EXPIRATION_TIME = 86400000;
+        public final static String CLAIM_ROLE = "roleName";
+
     }
 
     public static class OrderStatusEnum {

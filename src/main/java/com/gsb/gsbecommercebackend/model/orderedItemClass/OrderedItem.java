@@ -1,4 +1,4 @@
-package com.gsb.gsbecommercebackend.model;
+package com.gsb.gsbecommercebackend.model.orderedItemClass;
 
 
 public class OrderedItem {

@@ -1,4 +1,6 @@
-package com.gsb.gsbecommercebackend.model;
+package com.gsb.gsbecommercebackend.model.usersClass;
+
+import com.gsb.gsbecommercebackend.model.rolesClass.Roles;
 
 import java.time.LocalDateTime;
 
@@ -9,9 +11,12 @@ public class Users {
     private String userSurname;
     private String userEmail;
     private String userPassword;
-    private String userRole;
+    private int roleId; // Champ temporaire pour mapper directement le roleId du payload
     private LocalDateTime userDateCreation;
     private LocalDateTime userModifiedAt;
+
+    private Roles role; // Relation avec la classe Roles
+
 
     public Users(){};
 
@@ -23,6 +28,22 @@ public class Users {
         this.userId = userId;
     }
 
+
+    public int getRoleId() {
+        return this.role != null ? this.role.getRoleId() : this.roleId; // Si rôle est null, retournez roleId
+    }
+
+    public void setRoleId(int roleId) {
+        this.roleId = roleId;
+        if (this.role == null) {
+            this.role = new Roles();
+        }
+        this.role.setRoleId(roleId);
+    }
+
+
+
+
     public String getUserName() {
         return userName;
     }
@@ -30,6 +51,7 @@ public class Users {
     public void setUserName(String userName) {
         this.userName = userName;
     }
+
 
     public String getUserSurname() {
         return userSurname;
@@ -39,6 +61,7 @@ public class Users {
         this.userSurname = userSurname;
     }
 
+
     public String getUserEmail() {
         return userEmail;
     }
@@ -46,6 +69,7 @@ public class Users {
     public void setUserEmail(String userEmail) {
         this.userEmail = userEmail;
     }
+
 
     public String getUserPassword() {
         return userPassword;
@@ -55,13 +79,16 @@ public class Users {
         this.userPassword = userPassword;
     }
 
-    public String getUserRole() {
-        return userRole;
+
+    public Roles getRole() {
+        return role;
     }
 
-    public void setUserRole(String userRole) {
-        this.userRole = userRole;
+    public void setRole(Roles role) {
+        this.role = role;
     }
+
+
 
     public LocalDateTime getUserDateCreation() {
         return userDateCreation;
@@ -79,6 +106,7 @@ public class Users {
      * Ici elle surcharge la méthode toString qui est native à l'objet, on redéfini son comportement
      * Si l'on voulait créer notre propre méthode sans override cette dernière nous aurions pu utiliser
      * String ToString() et enlever l'annotation. On peut faire de même avec les méthodes equalsTo() ou hashCode() */
+    /* Ici on override le print en console pour l'instaciation d'un objet dérivé de la classe User*/
     @Override
     public String toString() {
         return "Users{" +
@@ -87,11 +115,13 @@ public class Users {
                 ", userSurname='" + userSurname + '\'' +
                 ", userEmail='" + userEmail + '\'' +
                 ", userPassword='" + userPassword + '\'' +
-                ", userRole='" + userRole + '\'' +
+                ", roleId=" + (role != null ? role.getRoleId() : "null") +
                 ", userDateCreation=" + userDateCreation +
                 ", modifiedAt=" + userModifiedAt +
                 '}';
     }
+
+
 
 }
 

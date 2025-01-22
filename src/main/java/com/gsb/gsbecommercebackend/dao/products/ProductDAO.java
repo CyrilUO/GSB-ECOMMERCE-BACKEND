@@ -1,10 +1,10 @@
-package com.gsb.gsbecommercebackend.dao;
+package com.gsb.gsbecommercebackend.dao.products;
 
-import com.gsb.gsbecommercebackend.model.Product;
-import com.gsb.gsbecommercebackend.model.Users;
+import com.gsb.gsbecommercebackend.model.productsClass.Product;
 import com.gsb.gsbecommercebackend.model.builder.ProductBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
@@ -54,6 +54,7 @@ public class ProductDAO {
     }
 
 
+    // Ce qui est couteux c'est la recerche
     public Product updateProduct(Product product) {
         String sql = "UPDATE " + PRODUCT_TABLE + " SET " + PRODUCT_NAME + " = ?, " + PRODUCT_DESCRIPTION + " = ?, " + PRODUCT_PRICE + " = ?, " + PRODUCT_STOCK + " = ? " +
                 "WHERE " + PRODUCT_ID + " = ?";
@@ -85,4 +86,41 @@ public class ProductDAO {
         }
     }
 
+    public void decreaseStock(int productId, int quantity) {
+        String sql = "UPDATE " + PRODUCT_TABLE + " SET " + PRODUCT_STOCK + " = " + PRODUCT_STOCK + " - ? " +
+                "WHERE " + PRODUCT_ID + " = ? AND " + PRODUCT_STOCK + " >= ?";
+
+
+        int rowsUpdated = jdbcTemplate.update(sql, quantity, productId, quantity);
+
+        if (rowsUpdated == 0) {
+            throw new RuntimeException("Échec de la mise à jour du stock pour le produit ID : " + productId);
+        }
+    }
+
+    public String getProductNameById(int productId) {
+        String sql = "SELECT " + PRODUCT_NAME + " FROM " + PRODUCT_TABLE + " WHERE " + PRODUCT_ID + " = ?";
+        try {
+            return jdbcTemplate.queryForObject(sql, String.class, productId);
+        } catch (EmptyResultDataAccessException e) {
+            System.err.println("Aucun produit trouvé avec l'ID : " + productId);
+            return null; // Ou "Produit inconnu"
+        }
+    }
+
+
+    public boolean productExists(int productId) {
+        String sql = "SELECT COUNT(*) FROM " + PRODUCT_TABLE + " WHERE " + PRODUCT_ID + " = ?";
+        Integer count = jdbcTemplate.queryForObject(sql, new Object[]{productId}, Integer.class);
+        return count != null && count > 0;
+    }
+
+    public int getCurrentStockById(int productId) {
+        if (!productExists(productId)) {
+            System.err.println("Le produit avec l'ID " + productId + " n'existe pas.");
+            return 0;
+        }
+        String sql = "SELECT " + PRODUCT_STOCK + " FROM " + PRODUCT_TABLE + " WHERE " + PRODUCT_ID + " = ?";
+        return jdbcTemplate.queryForObject(sql, new Object[]{productId}, Integer.class);
+    }
 }

@@ -1,6 +1,6 @@
 package com.gsb.gsbecommercebackend.model.builder;
 
-import com.gsb.gsbecommercebackend.model.Product;
+import com.gsb.gsbecommercebackend.model.productsClass.Product;
 
 /* Design pattern to construct complex objects step by step */
 

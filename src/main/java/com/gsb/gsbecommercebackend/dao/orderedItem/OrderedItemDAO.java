@@ -1,8 +1,8 @@
-package com.gsb.gsbecommercebackend.dao;
+package com.gsb.gsbecommercebackend.dao.orderedItem;
 
 import static com.gsb.gsbecommercebackend.constant.AppConstants.OrderedItemsDataSource.*;
 
-import com.gsb.gsbecommercebackend.model.OrderedItem;
+import com.gsb.gsbecommercebackend.model.orderedItemClass.OrderedItem;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -39,10 +39,14 @@ public class OrderedItemDAO {
                     item.getOrderedItemsUnitPrice(),
                     item.getOrderId()
             );
+
+            System.out.println("Ajout d'un article : " + item);
+
             System.out.println("Insertion dans ordered_items : " +
                     "orderId=" + item.getOrderId() +
                     ", productId=" + item.getProductId() +
-                    ", quantity=" + item.getOrderedItemsQuantity());
+                    ", itemQuantity=" + item.getOrderedItemsQuantity() +
+                    ", itemUnitPrice=" + item.getOrderedItemsUnitPrice());
 
         } catch (Exception e) {
             System.err.println("Erreur lors de l'insertion dans ordered_items : " + e.getMessage());

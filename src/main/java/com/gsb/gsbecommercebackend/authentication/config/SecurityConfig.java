@@ -2,7 +2,6 @@ package com.gsb.gsbecommercebackend.authentication.config;
 
 import com.gsb.gsbecommercebackend.authentication.filter.JwtAuthenticationFilter;
 import com.gsb.gsbecommercebackend.authentication.service.JwtService;
-import com.gsb.gsbecommercebackend.constant.AppConstants;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -10,13 +9,13 @@ import org.springframework.security.config.annotation.authentication.configurati
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
-import org.springframework.security.config.annotation.web.configurers.HeadersConfigurer;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import com.gsb.gsbecommercebackend.service.UsersService;
-import static com.gsb.gsbecommercebackend.constant.AppConstants.Roles.*;
+import com.gsb.gsbecommercebackend.service.users.UsersService;
+import static com.gsb.gsbecommercebackend.constant.AppConstants.RolesDataSource.*;
 
 
 
@@ -43,12 +42,12 @@ public class SecurityConfig {
         http
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/h2-console/**").permitAll()
+//                        .requestMatchers("/h2-console/**").permitAll()
                         .requestMatchers("/auth/login").permitAll()
                         .requestMatchers("/api/**").hasAnyRole(ADMIN, MEDICAL_EMPLOYEE, SALESPERSON)
                         .anyRequest().authenticated()
                 )
-                .headers(headers -> headers.frameOptions(HeadersConfigurer.FrameOptionsConfig::disable)) // Désactive les protections pour les frames (nécessaire pour H2 Console pour les tests) à commenter
+//                .headers(headers -> headers.frameOptions(HeadersConfigurer.FrameOptionsConfig::disable)) // Désactive les protections pour les frames (nécessaire pour H2 Console pour les tests) à commenter
 
                 .addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
 

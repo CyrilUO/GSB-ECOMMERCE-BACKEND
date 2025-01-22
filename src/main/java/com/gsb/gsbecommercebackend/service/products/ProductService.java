@@ -1,15 +1,12 @@
-package com.gsb.gsbecommercebackend.service;
+package com.gsb.gsbecommercebackend.service.products;
 
 /* Lien entre controlleur et DAO */
 /* Injection de dépendance */
 
-import com.gsb.gsbecommercebackend.dao.ProductDAO;
-import com.gsb.gsbecommercebackend.model.Product;
-import com.gsb.gsbecommercebackend.model.Users;
-import jakarta.annotation.PostConstruct;
+import com.gsb.gsbecommercebackend.dao.products.ProductDAO;
+import com.gsb.gsbecommercebackend.model.productsClass.Product;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 /* La logique c'est dans les services */

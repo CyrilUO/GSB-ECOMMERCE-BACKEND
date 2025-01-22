@@ -1,4 +1,4 @@
-package com.gsb.gsbecommercebackend.model;
+package com.gsb.gsbecommercebackend.model.usersClass;
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;

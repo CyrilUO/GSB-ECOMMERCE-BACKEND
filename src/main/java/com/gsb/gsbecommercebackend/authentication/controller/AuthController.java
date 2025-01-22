@@ -2,11 +2,13 @@ package com.gsb.gsbecommercebackend.authentication.controller;
 
 import com.gsb.gsbecommercebackend.authentication.dto.AuthRequest;
 import com.gsb.gsbecommercebackend.authentication.service.JwtService;
-import com.gsb.gsbecommercebackend.service.UsersService;
+import com.gsb.gsbecommercebackend.service.users.UsersService;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -37,14 +39,18 @@ public class AuthController {
             // Utilisation de UsersService pour charger les détails utilisateur
             UserDetails userDetails = usersService.loadUserByUsername(authRequest.getUserEmail());
             String userRole = userDetails.getAuthorities().iterator().next().getAuthority().replace("ROLE_", "");
+            System.out.println("Le rôle de l'utilisateur connecté est: " + userRole);
+
 
             // Générer le token
             return jwtService.generateToken(authRequest.getUserEmail(), userRole);
 
-        } catch (AuthenticationException e) {
-            e.printStackTrace();
-            throw new RuntimeException("Invalid credentials");
-        }
+        } catch (BadCredentialsException e) {
+            throw new BadCredentialsException("Identifiants invalides", e);
+        }  catch (UsernameNotFoundException e) {
+        throw new RuntimeException("Utilisateur introuvable", e);
+    }
+
     }
 
 

@@ -1,22 +1,23 @@
 spring:
   datasource:
-    url: jdbc:h2:mem:testdb   # Base de données H2 en mémoire
+    url: jdbc:h2:mem:testdb          # Base de données H2 en mémoire
     driver-class-name: org.h2.Driver
-    username:                # Nom d'utilisateur par défaut pour H2
-    password:                # Aucun mot de passe nécessaire
+    username: sa                    # Utilisateur par défaut
+    password:                       # Aucun mot de passe requis
   h2:
     console:
-      enabled: true          # Active la console H2 pour debug (accès via localhost:8080/h2-console)
-      path: /h2
-
-  jdbc:
-    template:
-      show-sql: true         # Active l'affichage des requêtes SQL dans la console
+      enabled: true                # Active la console H2
+      path: /h2                    # Accès via localhost:8090/h2
+      settings:
+        web-allow-others: true     # Autorise les connexions externes pour debug
   sql:
     init:
-      mode: always           # Exécute les fichiers schema.sql et data.sql à chaque test          # Spécifie H2 comme plateforme SQL
-      schema-locations: schema.sql
-      data-locations: data.sql
+      mode: always                 # Charge schema.sql et data.sql
+      schema-locations: classpath:schema.sql
+      data-locations: classpath:data.sql
+  jdbc:
+    template:
+      show-sql: true
 
 server:
   port: 8090

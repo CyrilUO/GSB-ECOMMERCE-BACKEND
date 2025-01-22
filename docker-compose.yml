@@ -18,7 +18,7 @@ services:
     container_name: gsb_db
     environment:
       MYSQL_ROOT_PASSWORD: root
-      MYSQL_DATABASE: gsb_ecommerce
+      MYSQL_DATABASE: gsb_db_ecommerce
     ports:
       - "3306:3306"
     networks:

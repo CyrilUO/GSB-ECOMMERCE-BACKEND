@@ -3,7 +3,6 @@ package com.gsb.gsbecommercebackend.authentication.dto;
 public class AuthRequest {
     private String userEmail;
     private String userPassword;
-    private String userRole;
 
     public String getUserEmail() {
         return userEmail;

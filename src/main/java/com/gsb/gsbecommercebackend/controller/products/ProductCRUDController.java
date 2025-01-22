@@ -1,20 +1,18 @@
-package com.gsb.gsbecommercebackend.controller;
+package com.gsb.gsbecommercebackend.controller.products;
 
-import com.gsb.gsbecommercebackend.model.Product;
-import com.gsb.gsbecommercebackend.service.ProductService;
+import com.gsb.gsbecommercebackend.model.productsClass.Product;
+import com.gsb.gsbecommercebackend.service.products.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Map;
-import java.util.Objects;
 
 /* Pas de DAO */
 
 @RequestMapping("/api")
 @RestController
-public class ProductController {
+public class ProductCRUDController {
 
     @Autowired
     private ProductService productService;
@@ -55,6 +53,19 @@ public class ProductController {
         }
     }
 
+
+    @GetMapping("/products/{id}")
+    public ResponseEntity<Product> getProductById(@PathVariable("id") int id) {
+        System.out.println("Requête GET pour récupérer le produit avec ID : " + id);
+
+        Product product = productService.getProductById(id);
+        if (product != null) {
+            return ResponseEntity.ok(product);
+        } else {
+            return ResponseEntity.notFound().build(); // Retourne un 404 si le produit est introuvable
+        }
+    }
+
     @PutMapping("/products/{productId}")
     public ResponseEntity<Product> updateProduct(@PathVariable int productId, @RequestBody Product product) {
         System.out.println("Requête reçue pour PUT /products/" + productId);
@@ -86,30 +97,4 @@ public class ProductController {
             return ResponseEntity.status(500).body("Erreur lors de la suppression du produit.");
         }
     }
-
-    @GetMapping("/products/stocks")
-    public ResponseEntity<List<Map<String, Object>>> getProductStockStats() {
-        try {
-            return ResponseEntity.ok(productService.getCurrentProductStock());
-
-
-        } catch (Exception e) {
-            System.out.println("Erreur lors de la suppression du produit : " + e.getMessage());
-            return ResponseEntity.status(500).body(null);
-        }
-    }
-
-    @GetMapping("products/{id}")
-    public ResponseEntity<Product> getProductById(@PathVariable("id") int id) {
-        System.out.println("Requête GET pour récupérer le produit avec ID : " + id);
-
-        Product product = productService.getProductById(id);
-        if (product != null) {
-            return ResponseEntity.ok(product);
-        } else {
-            return ResponseEntity.notFound().build(); // Retourne un 404 si le produit est introuvable
-        }
-    }
-
-
 }

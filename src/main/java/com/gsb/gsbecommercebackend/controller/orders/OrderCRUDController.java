@@ -1,22 +1,17 @@
-package com.gsb.gsbecommercebackend.controller;
+package com.gsb.gsbecommercebackend.controller.orders;
 
 
-import com.gsb.gsbecommercebackend.model.CustomUserDetails;
-import com.gsb.gsbecommercebackend.service.OrderService;
+import com.gsb.gsbecommercebackend.model.usersClass.CustomUserDetails;
+import com.gsb.gsbecommercebackend.service.orders.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
-import com.gsb.gsbecommercebackend.model.Order;
-import com.gsb.gsbecommercebackend.model.OrderedItem;
+import com.gsb.gsbecommercebackend.model.ordersClass.Order;
+import com.gsb.gsbecommercebackend.model.orderedItemClass.OrderedItem;
 
-import static com.gsb.gsbecommercebackend.constant.AppConstants.OrderDataSource.*;
 import static com.gsb.gsbecommercebackend.constant.AppConstants.OrderStatusEnum.*;
-import static com.gsb.gsbecommercebackend.constant.AppConstants.OrderedItemsDataSource.*;
 
 
 import java.util.List;
@@ -24,18 +19,20 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/api")
-public class OrderController {
+public class OrderCRUDController {
 
     /*Injecte automatiquement une dépendance (instance de la classe OrderService) dans une
-    * autre classe géré par le contexte Spring (OrderController)
-    * Spring detecte l'annotation et va chercher dans le conteneur une instance de la classe ou un Bean pour l'injecter*/
+     * autre classe géré par le contexte Spring (OrderController)
+     * Spring detecte l'annotation et va chercher dans le conteneur une instance de la classe ou un Bean pour l'injecter*/
     @Autowired
     private OrderService orderService;
 
-    @GetMapping("orders/{orderId}")
-    public ResponseEntity<Map<String, Object>> getOrderDetails(@PathVariable int orderId) {
+
+
+    @GetMapping("/orders/{orderId}")
+    public ResponseEntity<Map<String, Object>> getOrderDetailsByOrderId(@PathVariable int orderId) {
         try {
-            Map<String, Object> orderDetails = orderService.getOrderDetails(orderId);
+            Map<String, Object> orderDetails = orderService.getOrderDetailsByOrderId(orderId);
             return ResponseEntity.ok(orderDetails);
         } catch (Exception e) {
             return ResponseEntity.status(500).body(null);
@@ -43,9 +40,8 @@ public class OrderController {
     }
 
 
-
     @PostMapping("orders/create-order")
-    public ResponseEntity<String> createOrder(@RequestBody Map<String, Object> payload) {
+    public ResponseEntity<Map<String, Object>> createOrder(@RequestBody Map<String, Object> payload) {
         try {
             // Récupérer l'ID utilisateur depuis CustomUserDetails
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -53,6 +49,8 @@ public class OrderController {
             int userId = userDetails.getUserId();
 
             System.out.println("ID utilisateur récupéré : " + userId);
+
+
 
             // Récupérer les valeurs depuis le payload
             if (!payload.containsKey("deliveryAddressId") || payload.get("deliveryAddressId") == null) {
@@ -83,6 +81,19 @@ public class OrderController {
             order.setOrderTotalPrice(orderTotalPrice);
             order.setOrderStatus(ORDER_AWAITING);
 
+//            int test = Integer.parseInt(String.valueOf(order.getOrderId()));
+//
+////
+////            if(test.){
+////                throw new IllegalArgumentException("L'utilisateur est nul");
+////            }
+
+            if (order.getOrderStatus() == null || order.getOrderStatus().isEmpty()) {
+                throw new IllegalArgumentException("Status pas ajouté en bdd");
+            }
+
+            System.out.println("Status de la commande : " + order.getOrderStatus());
+
             // Traiter les produits commandés
             List<OrderedItem> orderedItems = items.stream().map(item -> {
                 OrderedItem orderedItem = new OrderedItem();
@@ -92,15 +103,32 @@ public class OrderController {
                 return orderedItem;
             }).toList();
 
-            // Sauvegarder la commande
             int orderId = orderService.createOrderWithItems(order, orderedItems);
-            return ResponseEntity.ok("L'ID de la commande est : " + orderId);
+
+            Map<String, Object> response = Map.of("orderId", orderId);
+            return ResponseEntity.ok(response);
 
         } catch (Exception e) {
             e.printStackTrace();
-            return ResponseEntity.status(500).body("Erreur lors de la création de la commande");
+            return ResponseEntity.status(500).body(Map.of("error", "Erreur lors de la création de la commande"));
         }
     }
+
+//    @GetMapping("/orders/order-list/${userId}")
+//    public ResponseEntity<List<Map<String, Object>>> getOrdersRecapByUserId() {
+//        try {
+//            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+//            CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
+//            int userId = userDetails.getUserId();
+//
+//            List<Map<String, Object>> orders = orderService.getOrdersByUserId(userId);
+//            return ResponseEntity.ok(orders);
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//            return ResponseEntity.status(500).body(null);
+//        }
+//    }
+
 
 
 }

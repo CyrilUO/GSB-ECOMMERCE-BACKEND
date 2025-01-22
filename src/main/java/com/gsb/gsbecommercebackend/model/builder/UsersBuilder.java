@@ -1,15 +1,17 @@
 package com.gsb.gsbecommercebackend.model.builder;
 
-import com.gsb.gsbecommercebackend.model.Users;
+import com.gsb.gsbecommercebackend.model.rolesClass.Roles;
+import com.gsb.gsbecommercebackend.model.usersClass.Users;
 
 import java.time.LocalDateTime;
-
 
 public class UsersBuilder {
 
     private final Users users;
 
-    public UsersBuilder()  { this.users = new Users(); }
+    public UsersBuilder() {
+        this.users = new Users();
+    }
 
     public UsersBuilder withId(int id) {
         this.users.setUserId(id);
@@ -36,11 +38,6 @@ public class UsersBuilder {
         return this;
     }
 
-    public UsersBuilder withRole(String role) {
-        this.users.setUserRole(role);
-        return this;
-    }
-
     public UsersBuilder withDateCreation(LocalDateTime dateCreation) {
         this.users.setUserDateCreation(dateCreation);
         return this;
@@ -51,8 +48,12 @@ public class UsersBuilder {
         return this;
     }
 
+    public UsersBuilder withRole(Roles role) {
+        this.users.setRole(role); // Utilisez le setter de role
+        return this;
+    }
 
-    public Users build(){
+    public Users build() {
         return this.users;
     }
 }
