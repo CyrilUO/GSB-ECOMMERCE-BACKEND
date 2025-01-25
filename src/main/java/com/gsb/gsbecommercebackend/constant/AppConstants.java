@@ -56,9 +56,6 @@ public class AppConstants {
         public final static String ROLES_TABLE = "roles";
         public final static String ROLE_ID = "role_id";
         public final static String ROLE_NAME = "role_name";
-        public final static String ADMIN = "admin";
-        public final static String MEDICAL_EMPLOYEE = "medical-employee";
-        public final static String SALESPERSON = "salesperson";
     }
 
     public static class JWTServiceParameters {
@@ -67,10 +64,17 @@ public class AppConstants {
 
     }
 
+
     public static class OrderStatusEnum {
         public final static String ORDER_AWAITING = "En attente";
         public final static String ORDER_DELAYED = "Reporté";
         public final static String ORDER_CONFIRMED = "Confirmé";
+    }
+
+    public static class RolesEnum {
+        public final static String ADMIN = "admin";
+        public final static String MEDICAL_EMPLOYEE = "medical-employee";
+        public final static String SALESPERSON = "salesperson";
     }
 
 }

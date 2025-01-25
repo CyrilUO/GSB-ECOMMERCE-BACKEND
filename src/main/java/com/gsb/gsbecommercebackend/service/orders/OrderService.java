@@ -1,5 +1,6 @@
 package com.gsb.gsbecommercebackend.service.orders;
 
+import com.gsb.gsbecommercebackend.customExceptions.users.DaoException;
 import com.gsb.gsbecommercebackend.dao.deliveryAddress.DeliveryAddressDAO;
 import com.gsb.gsbecommercebackend.dao.orders.OrderDAO;
 import com.gsb.gsbecommercebackend.dao.orderedItem.OrderedItemDAO;
@@ -109,21 +110,18 @@ public class OrderService {
         return response;
     }
 
-//    public List<Map<String, Object>> getOrdersByUserId(int userId) {
-//        List<Order> orders = orderDAO.getOrdersByUserId(userId);
-//
-//        List<Map<String, Object>> responseList = new ArrayList<>();
-//        for (Order order : orders) {
-//            Map<String, Object> orderDetails = new HashMap<>();
-//            orderDetails.put("orderId", order.getOrderId());
-//            orderDetails.put("orderStatus", order.getOrderStatus());
-//            orderDetails.put("orderTotalPrice", order.getOrderTotalPrice());
-//            orderDetails.put("orderCreatedAt", order.getOrderCreatedAt());
-//            responseList.add(orderDetails);
-//        }
-//
-//        return responseList;
-//    }
+    /* Gérer la liste des commandes pour utilisateur */
+
+    public List<Map<String, Object>> getDetailedOrdersByUserId (Integer userId){
+
+        try {
+            return orderDAO.getDetailedOrdersByUserId(userId);
+        } catch (DaoException e){
+            System.err.println("Erreur dans le service OrderService : " + e.getMessage());
+            throw e;
+        }
+
+    }
 
 
 

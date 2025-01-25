@@ -58,9 +58,6 @@ public class UsersDAO {
         }
     }
 
-//    public Users getUserSurname(String userName){
-//        String sql
-//    }
 
     public Users getUserDataById(int userId) {
         String sql = "SELECT u.*, r." + ROLE_ID + ", r." + ROLE_NAME +
