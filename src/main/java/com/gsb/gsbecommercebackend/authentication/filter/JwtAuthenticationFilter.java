@@ -53,7 +53,17 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 if (jwtService.validateToken(token)) {
                     String userEmail = jwtService.extractUserEmail(token);
                     String userRole = jwtService.extractUserRole(token);
+                    String userId = jwtService.extractClaim(token, "userId");
+                    System.out.println("User ID extrait du token : " + userId);
+
+                    if (userEmail == null || userId == null) {
+                        throw new Exception("Token invalide : email ou ID manquant.");
+                    }
+
                     var userDetails = usersService.loadUserByUsername(userEmail);
+
+                    System.out.println("Authentifié en tant que : " + userDetails.getUsername() + ", Rôles : " + userDetails.getAuthorities());
+
 
                     if (userRole == null) {
                         throw new Exception("Rôle introuvable dans le token !");
@@ -69,7 +79,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                     }
 
                     UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
-                            userDetails, null, userDetails.getAuthorities());
+                            userDetails, userId, userDetails.getAuthorities()
+                    );
                     authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
 
                     SecurityContextHolder.getContext().setAuthentication(authentication);

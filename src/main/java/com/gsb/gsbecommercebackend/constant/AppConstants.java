@@ -61,6 +61,7 @@ public class AppConstants {
     public static class JWTServiceParameters {
         public final static long EXPIRATION_TIME = 86400000;
         public final static String CLAIM_ROLE = "roleName";
+        public final static String CLAIM_USERID = "userId";
 
     }
 

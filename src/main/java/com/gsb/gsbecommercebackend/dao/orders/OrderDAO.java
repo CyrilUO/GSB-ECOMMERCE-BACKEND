@@ -8,13 +8,13 @@ import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.sql.SQLException;
+import java.util.*;
 
 import static com.gsb.gsbecommercebackend.constant.AppConstants.OrderDataSource.*;
 import static com.gsb.gsbecommercebackend.constant.AppConstants.OrderDataSource.ORDER_ID;
-import static com.gsb.gsbecommercebackend.constant.OrdersConstant.DetailedOrderSummaryView.*;
+import static com.gsb.gsbecommercebackend.constant.OrdersConstant.DetailedOrderSummaryViewDataSource.*;
+import static com.gsb.gsbecommercebackend.constant.OrdersConstant.DetailedOrderSummaryViewDataStringObject.*;
 
 
 @Repository
@@ -73,49 +73,70 @@ public class OrderDAO {
     }
 
     public List<Map<String, Object>> getDetailedOrdersByUserId(Integer userId) {
-
         if (userId == null) {
             throw new IllegalArgumentException("L'ID de l'utilisateur (userId) ne peut pas être null.");
         }
-        // Utilisez la vue OrderSummary pour plus de détails
+
         String sql = "SELECT * FROM " + VIEW_NAME + " WHERE " + USER_ID + " = ? ORDER BY " + ORDER_ID + " DESC";
+
+        System.out.println("Requête SQL exécutée : " + sql + ", userId : " + userId);
+
         try {
-            return jdbcTemplate.query(sql, (rs, rowNum) -> {
-                Map<String, Object> row = new HashMap<>();
-                row.put(USER_NAME, rs.getString(USER_NAME));
-                row.put(USER_SURNAME, rs.getString(USER_SURNAME));
-                row.put(USER_EMAIL, rs.getString(USER_EMAIL));
-                row.put(ORDER_ID, rs.getInt(ORDER_ID));
-                row.put(PRODUCT_NAME, rs.getString(PRODUCT_NAME));
-                row.put(QUANTITY, rs.getBigDecimal(QUANTITY));
-                row.put(UNIT_PRICE, rs.getBigDecimal(UNIT_PRICE));
-                row.put(TOTAL_ITEM_PRICE, rs.getBigDecimal(TOTAL_ITEM_PRICE));
-                row.put(TOTAL_ORDER_PRICE, rs.getBigDecimal(TOTAL_ORDER_PRICE));
-                row.put(CITY, rs.getString(CITY));
-                row.put(STREET, rs.getString(STREET));
-                row.put(ZIP_CODE, rs.getInt(ZIP_CODE));
-                row.put(COUNTRY, rs.getString(COUNTRY));
+            // Grouper les commandes et leurs produits
+            Map<Integer, Map<String, Object>> orders = new LinkedHashMap<>();
 
-                System.out.println("Insertion de la commande avec les valeurs : ");
-                System.out.println("Nom utilisateur : " + row.get(USER_NAME));
-                System.out.println("Prénom utilisateur : " + row.get(USER_SURNAME));
-                System.out.println("Email utilisateur : " + row.get(USER_EMAIL));
-                System.out.println("ID commande : " + row.get(ORDER_ID));
-                System.out.println("Nom du produit : " + row.get(PRODUCT_NAME));
-                System.out.println("Quantité : " + row.get(QUANTITY));
-                System.out.println("Prix unitaire : " + row.get(UNIT_PRICE));
-                System.out.println("Prix total des articles : " + row.get(TOTAL_ITEM_PRICE));
-                System.out.println("Prix total de la commande : " + row.get(TOTAL_ORDER_PRICE));
-                System.out.println("Ville : " + row.get(CITY));
-                System.out.println("Rue : " + row.get(STREET));
-                System.out.println("Code postal : " + row.get(ZIP_CODE));
-                System.out.println("Pays : " + row.get(COUNTRY));
+            jdbcTemplate.query(sql, new Object[]{userId}, rs -> {
+                try {
+                    int orderId = rs.getInt(ORDER_ID);
 
+                    // Commande existante ou nouvelle
+                    Map<String, Object> order = orders.computeIfAbsent(orderId, id -> {
+                        Map<String, Object> newOrder = new HashMap<>();
+                        try {
+                            newOrder.put(USER_ID_OBJECT, rs.getInt(USER_ID));
+                            newOrder.put(USER_NAME_OBJECT, rs.getString(USER_NAME));
+                            newOrder.put(USER_SURNAME_OBJECT, rs.getString(USER_SURNAME));
+                            newOrder.put(USER_EMAIL_OBJECT, rs.getString(USER_EMAIL));
+                            newOrder.put(ORDER_ID_OBJECT, id);
+                            newOrder.put(TOTAL_ORDER_PRICE_OBJECT, rs.getBigDecimal(TOTAL_ORDER_PRICE));
+                            newOrder.put(CITY_OBJECT, rs.getString(CITY));
+                            newOrder.put(STREET_OBJECT, rs.getString(STREET));
+                            newOrder.put(ZIP_CODE_OBJECT, rs.getInt(ZIP_CODE));
+                            newOrder.put(COUNTRY_OBJECT, rs.getString(COUNTRY));
+                            newOrder.put(ORDER_CREATED_AT_OBJECT, rs.getDate(ORDER_CREATED_AT));
+                            newOrder.put(ORDER_STATUS_OBJECT, rs.getString(ORDER_STATUS));
+                            newOrder.put(ITEMS_OBJECT, new ArrayList<Map<String, Object>>());
 
-                return row;
+                            System.out.println("Commande validée avec en données : " + newOrder);
 
-            }, userId);
-        } catch (DaoException e) {
+                        } catch (SQLException e) {
+                            throw new RuntimeException("Erreur lors de l'extraction des données de la commande : " + e.getMessage(), e);
+                        }
+                        return newOrder;
+                    });
+
+                    // Ajouter le produit
+                    List<Map<String, Object>> items = (List<Map<String, Object>>) order.get(ITEMS_OBJECT);
+                    Map<String, Object> item = new HashMap<>();
+                    try {
+                        item.put(PRODUCT_NAME_OBJECT, rs.getString(PRODUCT_NAME));
+                        item.put(QUANTITY_OBJECT, rs.getBigDecimal(QUANTITY));
+                        item.put(UNIT_PRICE_OBJECT, rs.getBigDecimal(UNIT_PRICE));
+                        item.put(TOTAL_ITEM_PRICE_OBJECT, rs.getBigDecimal(TOTAL_ITEM_PRICE));
+                        items.add(item);
+                    } catch (SQLException e) {
+                        throw new RuntimeException("Erreur lors de l'extraction des données du produit : " + e.getMessage(), e);
+                    }
+                } catch (SQLException e) {
+                    throw new RuntimeException("Erreur lors de l'extraction des données de la commande ou du produit : " + e.getMessage(), e);
+                }
+
+                System.out.println(orders);
+            });
+
+            // Retourner les commandes
+            return new ArrayList<>(orders.values());
+        } catch (Exception e) {
             System.err.println("Erreur lors de l'exécution de la requête : " + e.getMessage());
             throw new RuntimeException("Impossible de récupérer les données des commandes pour l'utilisateur " + userId, e);
         }
@@ -125,9 +146,13 @@ public class OrderDAO {
 
 
 
+
+
+
     /* Creation de vue pour créer des requêtes complexes sur différentes tables afin de manipuler des objets*/
 //    CREATE VIEW CompactOrderSummary AS
 //    SELECT
+//    u.user_id,
 //    u.user_name,
 //    u.user_surname,
 //    u.user_email,
@@ -143,13 +168,16 @@ public class OrderDAO {
 //    orders o ON u.user_id = o.user_id
 //            JOIN
 //    delivery_address da ON o.delivery_address_id = da.delivery_address_id;
-
+//
 //    CREATE VIEW DetailedOrderSummary AS
 //    SELECT
+//    u.user_id,
 //    u.user_name,
 //    u.user_surname,
 //    u.user_email,
 //    o.order_id,
+//    o.order_status,
+//    o.order_created_at,
 //    p.product_name,
 //    oi.ordered_items_quantity AS quantity,
 //    oi.ordered_items_unit_price AS unit_price,

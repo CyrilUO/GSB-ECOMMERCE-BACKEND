@@ -11,6 +11,7 @@ import java.util.Map;
 import java.util.Optional;
 
 import static com.gsb.gsbecommercebackend.constant.AppConstants.JWTServiceParameters.*;
+import static com.gsb.gsbecommercebackend.constant.AppConstants.UserDataSource.USER_ID;
 
 @Service
 public class JwtService {
@@ -29,11 +30,24 @@ public class JwtService {
         return Jwts.builder()
                 .setSubject(userId)
                 .claim(CLAIM_ROLE, roleName)
+                .claim(CLAIM_USERID, userId) // Ajoutez userId comme claim
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis() + EXPIRATION_TIME))
                 .signWith(key, SignatureAlgorithm.HS256)
                 .compact();
     }
+
+    public String generateTokenWithEmailAndId(String userId, String userEmail, String roleName) {
+        return Jwts.builder()
+                .setSubject(userEmail)
+                .claim(CLAIM_ROLE, roleName)
+                .claim(CLAIM_USERID, userId)
+                .setIssuedAt(new Date())
+                .setExpiration(new Date(System.currentTimeMillis() + EXPIRATION_TIME))
+                .signWith(key, SignatureAlgorithm.HS256)
+                .compact();
+    }
+
 
     public boolean validateToken(String token) {
         try {
@@ -74,6 +88,16 @@ public class JwtService {
             return null; // Retourner `null` si le rôle n'est pas présent ou en cas d'erreur
         }
     }
+
+    public String extractClaim(String token, String claimKey) {
+        try {
+            return parser.parseClaimsJws(token).getBody().get(claimKey, String.class);
+        } catch (JwtException | IllegalArgumentException e) {
+            System.err.println("Erreur lors de l'extraction de l'ID : " + e.getMessage());
+            return null; // Retourner `null` si le rôle n'est pas présent ou en cas d'erreur
+        }
+    }
+
 
     public Optional<String> generateTokenIfRoleHasChanged(Users user, Users updatedUser) {
         // Vérifiez si le rôle a changé

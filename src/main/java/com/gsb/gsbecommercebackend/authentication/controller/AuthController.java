@@ -2,6 +2,7 @@ package com.gsb.gsbecommercebackend.authentication.controller;
 
 import com.gsb.gsbecommercebackend.authentication.dto.AuthRequest;
 import com.gsb.gsbecommercebackend.authentication.service.JwtService;
+import com.gsb.gsbecommercebackend.model.usersClass.CustomUserDetails;
 import com.gsb.gsbecommercebackend.service.users.UsersService;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -36,14 +37,24 @@ public class AuthController {
                     new UsernamePasswordAuthenticationToken(authRequest.getUserEmail(), authRequest.getUserPassword())
             );
 
-            // Utilisation de UsersService pour charger les détails utilisateur
+            // Charger les détails utilisateur
             UserDetails userDetails = usersService.loadUserByUsername(authRequest.getUserEmail());
-            String userRole = userDetails.getAuthorities().iterator().next().getAuthority().replace("ROLE_", "");
-            System.out.println("Le rôle de l'utilisateur connecté est: " + userRole);
 
+            // Caster en CustomUserDetails pour accéder à getUserId()
+            CustomUserDetails customUserDetails = (CustomUserDetails) userDetails;
+            int userId = customUserDetails.getUserId(); // Récupérer l'ID utilisateur
 
-            // Générer le token
-            return jwtService.generateToken(authRequest.getUserEmail(), userRole);
+            String userRole = customUserDetails.getAuthorities().iterator().next().getAuthority().replace("ROLE_", "");
+            System.out.println("User ID chargé depuis les détails utilisateur : " + userId);
+
+            // Générer le token en incluant userId comme claim
+
+            return jwtService.generateTokenWithEmailAndId(
+                    String.valueOf(userId), // ID récupéré depuis les détails utilisateur
+                    authRequest.getUserEmail(),
+                    userRole
+            );
+
 
         } catch (BadCredentialsException e) {
             throw new BadCredentialsException("Identifiants invalides", e);
