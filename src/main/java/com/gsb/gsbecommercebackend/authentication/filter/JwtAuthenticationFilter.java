@@ -14,6 +14,7 @@ import org.springframework.security.web.authentication.WebAuthenticationDetailsS
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.logging.Logger;
 
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
@@ -39,9 +40,37 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
      * @return :
      */
 
+
+    // CAN BE COMMENTED IF YOU WISH NOT TO USE SWAGGER
+    private static final List<String> EXCLUDED_PATHS = List.of(
+            "/v3/api-docs",
+            "/v3/api-docs/**",
+            "/swagger-ui.html",
+            "/swagger-ui/**",
+            "/webjars/**",
+            "/auth/login"
+    );
+
+    @Override
+    protected boolean shouldNotFilter(HttpServletRequest request) {
+        String path = request.getRequestURI();
+        return EXCLUDED_PATHS.stream().anyMatch(path::startsWith);
+    }
+
+    // Comment till here
+
+
+
+
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
             throws ServletException, IOException {
+
+        /* This conditional statement can be commented to remove swagger */
+        if (shouldNotFilter(request)) {
+            chain.doFilter(request, response);
+            return;
+        }
 
         String token = request.getHeader("Authorization");
 

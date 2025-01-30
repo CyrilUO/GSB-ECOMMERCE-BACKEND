@@ -15,8 +15,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import com.gsb.gsbecommercebackend.service.users.UsersService;
-import static com.gsb.gsbecommercebackend.constant.AppConstants.RolesEnum.*;
 
+import static com.gsb.gsbecommercebackend.constant.AppConstants.RolesEnum.*;
 
 
 @Configuration
@@ -42,17 +42,25 @@ public class SecurityConfig {
         http
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
-//                        .requestMatchers("/h2-console/**").permitAll()
+                        // Autoriser Swagger
+                        .requestMatchers(
+                                "/v3/api-docs/**",
+                                "/swagger-ui/**",
+                                "/swagger-ui.html",
+                                "/webjars/**"
+                        ).permitAll()
+                        // Autoriser l'authentification
                         .requestMatchers("/auth/login").permitAll()
+                        // Sécuriser les endpoints API
                         .requestMatchers("/api/**").hasAnyRole(ADMIN, MEDICAL_EMPLOYEE, SALESPERSON)
+                        // Tous les autres endpoints nécessitent une authentification
                         .anyRequest().authenticated()
                 )
-//                .headers(headers -> headers.frameOptions(HeadersConfigurer.FrameOptionsConfig::disable)) // Désactive les protections pour les frames (nécessaire pour H2 Console pour les tests) à commenter
-
                 .addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }
+
 
 
     @Bean
