@@ -1,4 +1,6 @@
 package com.gsb.gsbecommercebackend.dao.orders;
+import static com.gsb.gsbecommercebackend.constant.OrdersConstant.OrderSummary.*;
+
 
 
 import com.gsb.gsbecommercebackend.model.ordersClass.Order;
@@ -7,6 +9,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
 import javax.swing.plaf.PanelUI;
+import javax.swing.text.View;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -36,4 +39,9 @@ public class OrderAnalyticsDAO {
             return row;
         });
     }
+
+//    public List<Map<String, Object>> getOrdersByArea(int delivery_address_id){
+//
+//        String sql = "SELECT * FROM" + VIEW_ORDER_SUMMARY
+//    }
 }

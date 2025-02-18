@@ -168,10 +168,10 @@ public class UsersService implements UserDetailsService {
         return response;
     }
 
-
+     // TODO Use Deactivate User instead of delete or Use On casade to delete User and then Order !
 
     public void deleteUser(int id) {
-        Optional<Users> user = usersDAO.findByEmail(findEmailById(id));
+        Optional<Users> user = usersDAO.findById(id);
         if (user.isEmpty()) {
             throw new UsersServiceException("Impossible de supprimer : utilisateur inexistant avec l'ID : " + id);
         }
@@ -198,6 +198,10 @@ public class UsersService implements UserDetailsService {
             throw new RuntimeException("Erreur lors de la récupération des statistiques utilisateurs.", e);
         }
     }
+
+//    public Optional<Users> findById(int id) {
+//        return usersDAO.findById(id);
+//    }
 
 
 }

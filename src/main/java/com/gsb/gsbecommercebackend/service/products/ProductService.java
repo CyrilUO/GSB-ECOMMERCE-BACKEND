@@ -27,7 +27,7 @@ public class ProductService {
     }
 
     public Product addProduct(Product product) {
-        return productDAO.addProduct(product);
+            return productDAO.addProduct(product);
     }
 
     public Product updateProduct(Product product){

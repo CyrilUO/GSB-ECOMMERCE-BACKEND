@@ -17,8 +17,10 @@ public class ProductCRUDController {
     @Autowired
     private ProductService productService;
 
+
     @GetMapping("/products")
     public ResponseEntity<List<Product>> getAllProducts() {
+
         System.out.println("Requête reçue pour GET /products");
         try {
             List<Product> products = productService.getAllProducts();

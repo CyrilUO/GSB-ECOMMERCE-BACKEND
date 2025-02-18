@@ -56,6 +56,7 @@ public class UsersCRUDController {
 
         try {
             Optional<Users> user = usersService.getUserDataById(id);
+
             if (user.isPresent()) {
                 System.out.println("Utilisateur à l'id est bien présent : " + id);
 

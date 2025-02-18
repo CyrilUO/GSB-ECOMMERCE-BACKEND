@@ -59,9 +59,9 @@ public class ProductDAO {
         String sql = "UPDATE " + PRODUCT_TABLE + " SET " + PRODUCT_NAME + " = ?, " + PRODUCT_DESCRIPTION + " = ?, " + PRODUCT_PRICE + " = ?, " + PRODUCT_STOCK + " = ? " +
                 "WHERE " + PRODUCT_ID + " = ?";
 
-        int rowsAffected = jdbcTemplate.update(sql, product.getProductName(), product.getProductDescription(), product.getProductPrice(), product.getProductStock(), product.getProductId());
+        int rowToUpdate = jdbcTemplate.update(sql, product.getProductName(), product.getProductDescription(), product.getProductPrice(), product.getProductStock(), product.getProductId());
 
-        if (rowsAffected == 0) {
+        if (rowToUpdate == 0) {
             throw new RuntimeException("Échec de la mise à jour : aucun produit avec l'ID " + product.getProductId() + " n'a été trouvé.");
         }
 

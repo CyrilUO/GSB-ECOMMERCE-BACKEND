@@ -17,7 +17,6 @@ public class Users {
 
     private Roles role; // Relation avec la classe Roles
 
-
     public Users(){};
 
     public int getUserId() {

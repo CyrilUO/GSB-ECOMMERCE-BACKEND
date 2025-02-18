@@ -45,4 +45,10 @@ public class OrdersConstant {
 
 
     }
+
+
+    public static class OrderSummary {
+        public static final String VIEW_ORDER_SUMMARY = "OrderSummary";
+
+    }
 }

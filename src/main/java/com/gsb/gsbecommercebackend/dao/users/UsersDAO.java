@@ -165,11 +165,6 @@ public class UsersDAO {
 
 
 
-
-
-
-
-
     public void deleteUser(int id) {
         String sql = "DELETE FROM " + USERS_TABLE + " WHERE " + USER_ID + " = ?";
 

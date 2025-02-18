@@ -23,6 +23,8 @@ public class OrderAnalyticsController {
 
     @GetMapping("/orders/stats/daily-orders")
     public ResponseEntity<List<Map<String, Object>>> getDailyOrderAmount() {
+        // [{"orders" : {"items : "products"
+        // }}]
         try {
             // Appelle le service pour récupérer les données
             List<Map<String, Object>> dailyCounts = orderAnalyticsService.getDailyOrderAmount();

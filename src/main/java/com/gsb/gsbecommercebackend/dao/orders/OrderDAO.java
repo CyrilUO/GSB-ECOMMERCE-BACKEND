@@ -158,6 +158,7 @@ public class OrderDAO {
 //    u.user_email,
 //    o.order_id,
 //    o.order_total_price AS total_order_price,
+//    o.delivery_address_id
 //    da.delivery_address_city AS city,
 //    da.delivery_address_street AS street,
 //    da.delivery_address_zip_code AS zip_code,
