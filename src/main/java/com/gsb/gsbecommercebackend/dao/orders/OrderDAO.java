@@ -2,19 +2,27 @@ package com.gsb.gsbecommercebackend.dao.orders;
 
 import com.gsb.gsbecommercebackend.customExceptions.orders.OrderCreationException;
 import com.gsb.gsbecommercebackend.customExceptions.users.DaoException;
+import com.gsb.gsbecommercebackend.dto.OrderSummaryDTO;
+import com.gsb.gsbecommercebackend.model.deliveryAddressClass.DeliveryAddress;
 import com.gsb.gsbecommercebackend.model.ordersClass.Order;
+import com.gsb.gsbecommercebackend.model.usersClass.Users;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
 
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.*;
 
+import static com.gsb.gsbecommercebackend.constant.AppConstants.DeliveryAddressDataSource.*;
+import static com.gsb.gsbecommercebackend.constant.AppConstants.DeliveryAddressDataSource.DELIVERY_ADDRESS_ID;
 import static com.gsb.gsbecommercebackend.constant.AppConstants.OrderDataSource.*;
 import static com.gsb.gsbecommercebackend.constant.AppConstants.OrderDataSource.ORDER_ID;
 import static com.gsb.gsbecommercebackend.constant.OrdersConstant.DetailedOrderSummaryViewDataSource.*;
 import static com.gsb.gsbecommercebackend.constant.OrdersConstant.DetailedOrderSummaryViewDataStringObject.*;
+import static com.gsb.gsbecommercebackend.constant.OrdersConstant.OrderSummary.VIEW_ORDER_SUMMARY;
 
 
 @Repository
@@ -77,7 +85,7 @@ public class OrderDAO {
             throw new IllegalArgumentException("L'ID de l'utilisateur (userId) ne peut pas être null.");
         }
 
-        String sql = "SELECT * FROM " + VIEW_NAME + " WHERE " + USER_ID + " = ? ORDER BY " + ORDER_ID + " DESC";
+        String sql = "SELECT * FROM " + DETAILED_ORDER_SUMMARY_VIEW + " WHERE " + USER_ID + " = ? ORDER BY " + ORDER_ID + " DESC";
 
         System.out.println("Requête SQL exécutée : " + sql + ", userId : " + userId);
 
@@ -89,7 +97,6 @@ public class OrderDAO {
                 try {
                     int orderId = rs.getInt(ORDER_ID);
 
-                    // Commande existante ou nouvelle
                     Map<String, Object> order = orders.computeIfAbsent(orderId, id -> {
                         Map<String, Object> newOrder = new HashMap<>();
                         try {
@@ -142,6 +149,45 @@ public class OrderDAO {
         }
     }
 
+    public List<OrderSummaryDTO> getOrdersByRegion(int deliveryAddressId) {
+        String sql = " SELECT * FROM " + VIEW_ORDER_SUMMARY + " WHERE " + DELIVERY_ADDRESS_ID + " = ? ORDER BY " + ORDER_ID + " DESC";
+        return jdbcTemplate.query(sql, new Object[]{deliveryAddressId}, new OrderSummaryRowMapper());
+    }
+
+
+    private static class OrderSummaryRowMapper implements RowMapper<OrderSummaryDTO> {
+        @Override
+        public OrderSummaryDTO mapRow(ResultSet rs, int rowNum) throws SQLException {
+            // Création des objets User, Order et DeliveryAddress
+            Users users = new Users();
+            users.setUserId(rs.getInt(USER_ID));
+            users.setUserName(rs.getString(USER_NAME));
+            users.setUserSurname(rs.getString(USER_SURNAME));
+            users.setUserEmail(rs.getString(USER_EMAIL));
+
+            Order order = new Order();
+            order.setOrderId(rs.getInt(ORDER_ID));
+            order.setOrderTotalPrice(rs.getFloat(ORDER_TOTAL_PRICE));
+            order.setOrderStatus(rs.getString(ORDER_STATUS));
+            order.setDeliveryAddressId(rs.getInt(DELIVERY_ADDRESS_ID)); // Correction ici
+
+            DeliveryAddress deliveryAddress = new DeliveryAddress();
+            deliveryAddress.setDeliveryAddressCity(rs.getString(DELIVERY_ADDRESS_CITY));
+            deliveryAddress.setDeliveryAddressStreet(rs.getString(DELIVERY_ADDRESS_STREET));
+            deliveryAddress.setDeliveryAddressZipCode(rs.getInt(DELIVERY_ADDRESS_ZIP_CODE));
+            deliveryAddress.setDeliveryAddressCountry(rs.getString(DELIVERY_ADDRESS_COUNTRY));
+
+            // Retourner l'objet DTO correctement construit
+            return new OrderSummaryDTO(users, order, deliveryAddress);
+        }
+    }
+
+    public int updateOrderStatus(int orderId, String newStatus) {
+        String sql = "UPDATE " + ORDERS_TABLE + " SET " + ORDER_STATUS + " = ? WHERE " + ORDER_ID + " = ?";
+        return jdbcTemplate.update(sql, newStatus, orderId);
+    }
+
+}
 
 
 
@@ -149,8 +195,9 @@ public class OrderDAO {
 
 
 
-    /* Creation de vue pour créer des requêtes complexes sur différentes tables afin de manipuler des objets*/
-//    CREATE VIEW CompactOrderSummary AS
+
+/* Creation de vue pour créer des requêtes complexes sur différentes tables afin de manipuler des objets*/
+//    CREATE VIEW OrderSummary AS
 //    SELECT
 //    u.user_id,
 //    u.user_name,
@@ -199,6 +246,26 @@ public class OrderDAO {
 //            JOIN
 //    delivery_address da ON o.delivery_address_id = da.delivery_address_id;
 
+//    CREATE OR REPLACE VIEW orderSummary AS
+//    SELECT
+//    u.user_id,
+//    u.user_name,
+//    u.user_surname,
+//    u.user_email,
+//    o.order_id,
+//    o.order_total_price,
+//    o.delivery_address_id,
+//    o.order_status,
+//    da.delivery_address_city AS city,
+//    da.delivery_address_street AS street,
+//    da.delivery_address_zip_code AS zip_code,
+//    da.delivery_address_country AS country
+//            FROM
+//    users u
+//    INNER JOIN
+//    orders o ON u.user_id = o.user_id
+//    INNER JOIN
+//    delivery_address da ON o.delivery_address_id = da.delivery_address_id;
 
-}
+
 

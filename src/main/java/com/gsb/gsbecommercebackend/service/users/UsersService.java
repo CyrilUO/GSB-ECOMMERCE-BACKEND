@@ -182,10 +182,10 @@ public class UsersService implements UserDetailsService {
         }
     }
 
-    // Méthode utilitaire : trouver email par ID
-    private String findEmailById(int userId) {
-        return usersDAO.getUserNameByUserId(userId); // Méthode DAO pour récupérer l'utilisateur
-    }
+//    // Méthode utilitaire : trouver email par ID
+//    private String findEmailById(int userId) {
+//        return usersDAO.getUserNameByUserId(userId); // Méthode DAO pour récupérer l'utilisateur
+//    }
 
     public Optional<Users> findByEmail(String email) {
         return usersDAO.findByEmail(email);

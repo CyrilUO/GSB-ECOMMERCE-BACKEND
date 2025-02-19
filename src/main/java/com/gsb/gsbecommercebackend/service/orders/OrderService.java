@@ -6,6 +6,7 @@ import com.gsb.gsbecommercebackend.dao.orders.OrderDAO;
 import com.gsb.gsbecommercebackend.dao.orderedItem.OrderedItemDAO;
 import com.gsb.gsbecommercebackend.dao.products.ProductDAO;
 import com.gsb.gsbecommercebackend.dao.users.UsersDAO;
+import com.gsb.gsbecommercebackend.dto.OrderSummaryDTO;
 import com.gsb.gsbecommercebackend.model.ordersClass.Order;
 import com.gsb.gsbecommercebackend.model.orderedItemClass.OrderedItem;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -120,13 +121,20 @@ public class OrderService {
             System.err.println("Erreur dans le service OrderService : " + e.getMessage());
             throw e;
         }
+    }
 
+    public List<OrderSummaryDTO> getOrdersByRegion(int deliveryAddressId) {
+        return orderDAO.getOrdersByRegion(deliveryAddressId);
     }
 
 
-
-
-
-
+    public String updateOrderStatus(int orderId, String newStatus) {
+        int updatedRows = orderDAO.updateOrderStatus(orderId, newStatus);
+        if (updatedRows > 0) {
+            return "Statut mis à jour avec succès";
+        } else {
+            return "Aucune commande trouvée avec cet ID";
+        }
+    }
 
 }

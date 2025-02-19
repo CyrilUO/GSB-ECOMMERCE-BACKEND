@@ -212,7 +212,6 @@ public class UsersDAO {
 
 
 
-
     public Optional<Users> findByEmail(String email) {
         String sql = "SELECT u.*, r." + ROLE_ID + ", r." + ROLE_NAME +
                 " FROM " + USERS_TABLE + " u " +

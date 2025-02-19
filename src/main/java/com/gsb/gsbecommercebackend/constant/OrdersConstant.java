@@ -4,7 +4,7 @@ public class OrdersConstant {
 
     public static class DetailedOrderSummaryViewDataSource {
 
-        public static final String VIEW_NAME = "DetailedOrderSummary";
+        public static final String DETAILED_ORDER_SUMMARY_VIEW = "DetailedOrderSummary";
 
         public static final String USER_NAME = "user_name";
         public static final String USER_SURNAME = "user_surname";
@@ -49,6 +49,7 @@ public class OrdersConstant {
 
     public static class OrderSummary {
         public static final String VIEW_ORDER_SUMMARY = "OrderSummary";
+//        public static final String USER_ID_OBJECT;
 
     }
 }

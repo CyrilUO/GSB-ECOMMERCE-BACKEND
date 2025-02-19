@@ -22,7 +22,7 @@ public class CustomCorsFilter extends CorsFilter {
     private static UrlBasedCorsConfigurationSource configurationSource() {
         CorsConfiguration config = new CorsConfiguration();
         config.setAllowedOrigins(Arrays.asList("http://localhost:5173", "http://localhost:5174"));
-        config.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+        config.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"));
         config.setAllowedHeaders(List.of("*"));
         config.setAllowCredentials(true);
 

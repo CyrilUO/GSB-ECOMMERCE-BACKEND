@@ -68,8 +68,8 @@ public class AppConstants {
 
     public static class OrderStatusEnum {
         public final static String ORDER_AWAITING = "En attente";
-        public final static String ORDER_DELAYED = "Reporté";
-        public final static String ORDER_CONFIRMED = "Confirmé";
+        public final static String ORDER_SENT = "Expédié";
+        public final static String ORDER_SHIPPED = "Livré";
     }
 
     public static class RolesEnum {

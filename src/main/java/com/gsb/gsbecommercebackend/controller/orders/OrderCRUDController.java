@@ -1,6 +1,8 @@
 package com.gsb.gsbecommercebackend.controller.orders;
 
 
+import com.gsb.gsbecommercebackend.constant.OrdersConstant;
+import com.gsb.gsbecommercebackend.dto.OrderSummaryDTO;
 import com.gsb.gsbecommercebackend.model.usersClass.CustomUserDetails;
 import com.gsb.gsbecommercebackend.service.orders.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,11 +14,13 @@ import org.springframework.web.bind.annotation.*;
 import com.gsb.gsbecommercebackend.model.ordersClass.Order;
 import com.gsb.gsbecommercebackend.model.orderedItemClass.OrderedItem;
 import com.gsb.gsbecommercebackend.customExceptions.users.DaoException;
+import com.gsb.gsbecommercebackend.constant.AppConstants.OrderStatusEnum;
 
 
 import static com.gsb.gsbecommercebackend.constant.AppConstants.OrderStatusEnum.*;
 
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -29,7 +33,6 @@ public class OrderCRUDController {
      * Spring detecte l'annotation et va chercher dans le conteneur une instance de la classe ou un Bean pour l'injecter*/
     @Autowired
     private OrderService orderService;
-
 
 
     @GetMapping("/{orderId}")
@@ -52,7 +55,6 @@ public class OrderCRUDController {
             int userId = userDetails.getUserId();
 
             System.out.println("ID utilisateur récupéré pour créer la commande : " + userId);
-
 
 
             // Récupérer les valeurs depuis le payload
@@ -125,6 +127,46 @@ public class OrderCRUDController {
         }
     }
 
+    @GetMapping("/region/{deliveryAddressId}")
+    public ResponseEntity<List<OrderSummaryDTO>> getOrdersByRegion(@PathVariable int deliveryAddressId) {
+        List<OrderSummaryDTO> orders = orderService.getOrdersByRegion(deliveryAddressId);
+
+        if (orders.isEmpty()) {
+            return ResponseEntity.ok(Collections.emptyList());
+        }
+
+        return ResponseEntity.ok(orders);
+    }
+
+
+    @PatchMapping("/update-status/{orderId}")
+    public ResponseEntity<String> updateOrderStatus(@PathVariable int orderId, @RequestBody Map<String, String> updates) {
+        String newStatus = updates.get("orderStatus");
+
+        System.out.println("🟢 JSON reçu : " + updates);
+
+
+        if (newStatus == null || newStatus.trim().isEmpty()) {
+            return ResponseEntity.badRequest().body("Le champ 'orderStatus' est requis.");
+        }
+
+        String newStatusToEnum = mapStatus(newStatus);
+        if (newStatusToEnum == null) {
+            return ResponseEntity.badRequest().body("Statut de commande non valide");
+        }
+
+        String responseMessage = orderService.updateOrderStatus(orderId, newStatusToEnum);
+        return ResponseEntity.ok(responseMessage);
+    }
+
+    private String mapStatus(String shippingStatus) {
+        return switch (shippingStatus) {
+            case "En attente" -> ORDER_AWAITING;
+            case "Expédié" -> ORDER_SENT;
+            case "Livré" -> ORDER_SHIPPED;
+            default -> null;
+        };
+    }
 }
 
 
