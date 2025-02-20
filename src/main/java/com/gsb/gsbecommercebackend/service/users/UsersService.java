@@ -3,7 +3,9 @@ package com.gsb.gsbecommercebackend.service.users;
 import com.gsb.gsbecommercebackend.authentication.service.JwtService;
 import com.gsb.gsbecommercebackend.customExceptions.users.DaoException;
 import com.gsb.gsbecommercebackend.customExceptions.users.UsersServiceException;
+import com.gsb.gsbecommercebackend.dao.roles.RolesDao;
 import com.gsb.gsbecommercebackend.dao.users.UsersDAO;
+import com.gsb.gsbecommercebackend.model.rolesClass.Roles;
 import com.gsb.gsbecommercebackend.model.usersClass.CustomUserDetails;
 import com.gsb.gsbecommercebackend.model.usersClass.Users;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -14,7 +16,6 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -24,11 +25,13 @@ import java.util.Optional;
 public class UsersService implements UserDetailsService {
     private final UsersDAO usersDAO;
     private final PasswordEncoder passwordEncoder;
+    private final RolesDao rolesDao;
 
     private final JwtService jwtService;
 
-    public UsersService(UsersDAO usersDAO, JwtService jwtService) {
+    public UsersService(UsersDAO usersDAO, RolesDao rolesDao, JwtService jwtService) {
         this.usersDAO = usersDAO;
+        this.rolesDao = rolesDao;
         this.jwtService = jwtService;
         this.passwordEncoder = new BCryptPasswordEncoder();
     }
@@ -61,12 +64,11 @@ public class UsersService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String userEmail) throws UsernameNotFoundException {
-        // Récupérer l'utilisateur par son e-mail
+        System.out.println("🔍 Recherche utilisateur avec email : " + userEmail);
         Users user = usersDAO.findByEmail(userEmail)
-                .orElseThrow(() -> new UsernameNotFoundException("User not found with email: " + userEmail));
-
+                .orElseThrow(() -> new UsernameNotFoundException("Utilisateur non trouvé avec l'email : " + userEmail));
+        System.out.println("✅ Utilisateur trouvé : " + user.getUserEmail() + ", Rôle : " + user.getRole().getRoleName());
         System.out.println("Password from database: " + user.getUserPassword() + " Email from database :" + user.getUserEmail());
-        System.out.println("Loaded user: " + user.getUserEmail() + " with role: " + user.getRole().getRoleName() + "with role id:" + user.getRole().getRoleId());
         System.out.println("Loaded user with id: " + user.getUserId());
 
         if (user.getRole() == null) {
@@ -96,24 +98,67 @@ public class UsersService implements UserDetailsService {
 
     /* Pour la modification du token en fonction du rôle */
 
-
-    public Users updateUser(Users users) {
-        // Vérifier si l'utilisateur existe
+    public Map<String, String> updateUser(Users users, int currentUserId) {
         Optional<Users> existingUserOptional = usersDAO.findById(users.getUserId());
         if (existingUserOptional.isEmpty()) {
             throw new UsersServiceException("Impossible de mettre à jour : l'utilisateur n'existe pas.");
         }
 
         Users existingUser = existingUserOptional.get();
+        System.out.println("🔍 ID utilisateur en mise à jour : " + users.getUserId());
 
-        // Si le mot de passe est fourni, l'encoder, sinon conserver l'ancien
-        if (users.getUserPassword() != null && !users.getUserPassword().isBlank()) {
-            users.setUserPassword(passwordEncoder.encode(users.getUserPassword()));
+        // 🔹 Si aucun rôle n'est envoyé, conserver l'ancien rôle
+
+
+        System.out.println("🔍 Vérification : Ancien email = " + existingUser.getUserEmail());
+        System.out.println("🔍 Vérification : Nouveau email = " + users.getUserEmail());
+
+        System.out.println("🔍 Vérification : Ancien rôle = " + existingUser.getRole().getRoleName());
+        System.out.println("🔍 Vérification : Nouveau rôle = " + users.getRole().getRoleName());
+
+        if (users.getRole() == null || users.getRole().getRoleId() == 0) {
+            System.out.println("⚠️ Aucun rôle envoyé, récupération de l'ancien rôle...");
+            users.setRole(existingUser.getRole());
         } else {
-            users.setUserPassword(existingUser.getUserPassword()); // Conserver l'ancien mot de passe
+            // 🔹 Récupérer le rôle en base pour récupérer `roleName`
+            System.out.println("🔍 Vérification : Récupération du rôle avec ID = " + users.getRole().getRoleId());
+            Optional<Roles> roleOptional = rolesDao.findById(users.getRole().getRoleId());
+
+            if (roleOptional.isEmpty()) {
+                throw new UsersServiceException("Le rôle spécifié n'existe pas. ID: " + users.getRole().getRoleId());
+            }
+
+            users.setRole(roleOptional.get());  // 🔹 Assigner le rôle avec `roleName` correctement récupéré
+            System.out.println("✅ Rôle trouvé et attribué : " + users.getRole().getRoleName());
         }
 
-        // Mettre à jour les champs non fournis avec les valeurs existantes
+
+        if (currentUserId == users.getUserId()) {
+            if (users.getRole() != null && !existingUser.getRole().getRoleName().equals(users.getRole().getRoleName())) {
+                throw new UsersServiceException("Vous ne pouvez pas modifier votre propre rôle.");
+            }
+            // ⚠️ S'assurer que le rôle est bien conservé
+            users.setRole(existingUser.getRole());
+        }
+
+
+
+        System.out.println("🔹 Ancien email : " + existingUser.getUserEmail());
+        System.out.println("🔹 Nouvel email : " + users.getUserEmail());
+
+        System.out.println("🔹 Ancien rôle avant mise à jour : " + existingUser.getRole().getRoleName());
+        System.out.println("🔹 Rôle envoyé dans la requête : " + (users.getRole() != null ? users.getRole().getRoleName() : "null"));
+
+
+        // 🔹 Ne pas re-hacher un mot de passe déjà haché
+        if (users.getUserPassword() != null && !users.getUserPassword().isBlank()) {
+            if (!users.getUserPassword().startsWith("$2a$")) { // Vérifie si déjà haché
+                users.setUserPassword(passwordEncoder.encode(users.getUserPassword()));
+            }
+        } else {
+            users.setUserPassword(existingUser.getUserPassword()); // Garde l'ancien mot de passe
+        }
+
         users.setUserName(users.getUserName() != null && !users.getUserName().isBlank()
                 ? users.getUserName()
                 : existingUser.getUserName());
@@ -123,52 +168,46 @@ public class UsersService implements UserDetailsService {
         users.setUserEmail(users.getUserEmail() != null && !users.getUserEmail().isBlank()
                 ? users.getUserEmail()
                 : existingUser.getUserEmail());
-        users.setRole(users.getRole() != null
-                ? users.getRole()
-                : existingUser.getRole());
-
-        System.out.println("Requête SQL exécutée avec roleId : " +
-                (users.getRole() != null ? users.getRole().getRoleId() : "null"));
 
 
-        // Appeler le DAO pour sauvegarder les modifications
+        // 🔹 Mise à jour en base de données
         usersDAO.updateUser(users);
 
-        return users;
-    }
+        // 🔄 Recharger l'utilisateur après la mise à jour pour être sûr qu'il contient bien un rôle
+        Users updatedUser = usersDAO.findById(users.getUserId()).orElseThrow(() ->
+                new UsersServiceException("Erreur lors du rechargement de l'utilisateur après mise à jour."));
 
-
-    public Optional<String> handleRoleChange(Users existingUser, Users updatedUser) {
-        // Déléguer la génération du token au JwtService
-        return jwtService.generateTokenIfRoleHasChanged(existingUser, updatedUser);
-    }
-
-    public Map<String, Object> updateUserAndHandleToken(Users users) {
-        Users existingUser = usersDAO.findById(users.getUserId())
-                .orElseThrow(() -> new UsersServiceException("Impossible de mettre à jour : l'utilisateur n'existe pas."));
-
-        // Mettre à jour l'utilisateur
-        Users updatedUser = updateUser(users);
-
-        // Vérifier si un nouveau token est nécessaire
-        Optional<String> token = handleRoleChange(existingUser, updatedUser);
-
-        // Préparer la réponse
-        Map<String, Object> response = new HashMap<>();
-        response.put("user", updatedUser);
-        token.ifPresent(t -> {
-            response.put("token", t);
-            response.put("message", "Utilisateur mis à jour avec succès. Nouveau token généré.");
-        });
-
-        if (token.isEmpty()) {
-            response.put("message", "Utilisateur mis à jour sans modification de rôle.");
+        if (updatedUser.getRole() == null) {
+            throw new UsersServiceException("Le rôle de l'utilisateur est null après mise à jour !");
         }
+
+        System.out.println("✅ Rôle après mise à jour : " + updatedUser.getRole().getRoleName());
+
+
+
+        Map<String, String> response = new HashMap<>();
+        response.put("message", "Utilisateur mis à jour avec succès.");
+        response.put("userId", String.valueOf(users.getUserId()));
+
+        // ✅ Générer un nouveau token uniquement pour l'utilisateur mis à jour
+        if (currentUserId == users.getUserId()) {
+            String newToken = jwtService.generateTokenWithEmailAndId(
+                    String.valueOf(users.getUserId()),
+                    users.getUserEmail(),
+                    users.getRole().getRoleName()
+            );
+            System.out.println("✅ Nouveau token généré après mise à jour : " + newToken);
+            System.out.println("📢 Claims du token : " + jwtService.parseTokenClaims(newToken));
+            response.put("newToken", newToken);
+        }
+
+
 
         return response;
     }
 
-     // TODO Use Deactivate User instead of delete or Use On casade to delete User and then Order !
+
+
 
     public void deleteUser(int id) {
         Optional<Users> user = usersDAO.findById(id);

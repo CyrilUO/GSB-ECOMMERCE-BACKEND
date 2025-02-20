@@ -131,8 +131,9 @@ public class UsersDAO {
                 USER_NAME + " = ?, " +
                 USER_EMAIL + " = ?, " +
                 USER_PASSWORD + " = ?, " +
-                ROLE_ID + " = ? " +
+                ROLE_ID + " = COALESCE(?, " + ROLE_ID + ") " + // 🔹 NE PAS écraser l'ancien rôle si NULL
                 "WHERE " + USER_ID + " = ?";
+
 
         try {
             System.out.println("Exécution de la requête avec :");

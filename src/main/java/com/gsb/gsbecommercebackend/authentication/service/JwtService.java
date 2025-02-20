@@ -25,19 +25,11 @@ public class JwtService {
             .setSigningKey(key)
             .build();
 
-    public String generateToken(String userId, String roleName) {
-
-        return Jwts.builder()
-                .setSubject(userId)
-                .claim(CLAIM_ROLE, roleName)
-                .claim(CLAIM_USERID, userId) // Ajoutez userId comme claim
-                .setIssuedAt(new Date())
-                .setExpiration(new Date(System.currentTimeMillis() + EXPIRATION_TIME))
-                .signWith(key, SignatureAlgorithm.HS256)
-                .compact();
-    }
-
     public String generateTokenWithEmailAndId(String userId, String userEmail, String roleName) {
+        if (userId == null || userEmail == null || roleName == null) {
+            throw new IllegalArgumentException("Impossible de générer le token : un des paramètres est null.");
+        }
+
         return Jwts.builder()
                 .setSubject(userEmail)
                 .claim(CLAIM_ROLE, roleName)
@@ -47,6 +39,22 @@ public class JwtService {
                 .signWith(key, SignatureAlgorithm.HS256)
                 .compact();
     }
+
+
+    public Claims parseTokenClaims(String token) {
+        try {
+            return Jwts.parserBuilder()
+                    .setSigningKey(key)
+                    .build()
+                    .parseClaimsJws(token)
+                    .getBody();
+        } catch (Exception e) {
+            System.err.println("❌ Erreur lors du parsing du token : " + e.getMessage());
+            return null;
+        }
+    }
+
+
 
 
     public boolean validateToken(String token) {
@@ -97,24 +105,4 @@ public class JwtService {
             return null; // Retourner `null` si le rôle n'est pas présent ou en cas d'erreur
         }
     }
-
-
-    public Optional<String> generateTokenIfRoleHasChanged(Users user, Users updatedUser) {
-        // Vérifiez si le rôle a changé
-        if (user.getRole() == null ||
-                !user.getRole().getRoleName().equals(updatedUser.getRole().getRoleName())) {
-
-            // Générer un nouveau token
-            String token = generateToken(
-                    String.valueOf(updatedUser.getUserId()),
-                    updatedUser.getRole().getRoleName()
-            );
-            return Optional.of(token);
-        }
-
-        // Retourner vide si le rôle n'a pas changé
-        return Optional.empty();
-    }
-
-
 }

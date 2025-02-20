@@ -76,6 +76,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         if (token != null && token.startsWith("Bearer ")) {
             token = token.substring(7);
+            System.out.println("🔍 Token reçu : " + token);
+            System.out.println("📢 Claims du token : " + jwtService.parseTokenClaims(token));
+
 
             try {
 
@@ -91,6 +94,12 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
                     var userDetails = usersService.loadUserByUsername(userEmail);
 
+                    if (!userDetails.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_" + userRole))) {
+                        System.out.println("⚠️ Conflit entre rôle du token (" + userRole + ") et rôle en base (" + userDetails.getAuthorities() + ")");
+                        throw new RuntimeException("Rôle utilisateur modifié. Déconnexion requise.");
+                    }
+
+
                     System.out.println("Authentifié en tant que : " + userDetails.getUsername() + ", Rôles : " + userDetails.getAuthorities());
 
 
@@ -104,8 +113,10 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                     System.out.println("Role extraction depuis la méthode : " + userRole);
 
                     if (!userDetails.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_" + userRole))) {
+                        System.out.println("⚠️ Conflit entre rôle du token (" + userRole + ") et rôle en base (" + userDetails.getAuthorities() + ")");
                         throw new RuntimeException("Rôle utilisateur modifié. Déconnexion requise.");
                     }
+
 
                     UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
                             userDetails, userId, userDetails.getAuthorities()

@@ -1,5 +1,6 @@
 package com.gsb.gsbecommercebackend.controller.users;
 
+import com.gsb.gsbecommercebackend.authentication.service.JwtService;
 import com.gsb.gsbecommercebackend.customExceptions.users.UsersServiceException;
 import com.gsb.gsbecommercebackend.model.usersClass.Users;
 import com.gsb.gsbecommercebackend.model.rolesClass.Roles;
@@ -28,6 +29,9 @@ public class UsersCRUDController {
 
     @Autowired
     private UsersService usersService;
+
+    @Autowired
+    private JwtService jwtService;
 
     @GetMapping("/users")
     public ResponseEntity<List<Users>> getAllUsers() {
@@ -104,9 +108,17 @@ public class UsersCRUDController {
         }
     }
 
+
     @PutMapping("/users/{id}")
-    public ResponseEntity<Map<String, String>> updateUser(@PathVariable int id, @RequestBody Map<String, Object> payload) {
+    public ResponseEntity<Map<String, String>> updateUser(@PathVariable int id,
+                                                          @RequestBody Map<String, Object> payload,
+                                                          @RequestHeader("Authorization") String token) {
         try {
+            // Extraire l'ID utilisateur depuis le token
+            String jwt = token.replace("Bearer ", "");
+            int currentUserId = Integer.parseInt(jwtService.extractClaim(jwt, "userId"));
+            System.out.println("Id de l'utilisateur envoyant la requete" + currentUserId);
+
             Users users = new Users();
             users.setUserId(id);
             users.setUserName((String) payload.get("userName"));
@@ -120,25 +132,19 @@ public class UsersCRUDController {
                 users.setRole(role);
             }
 
-            System.out.println("Données reçues dans le contrôleur : " + users);
-
-            Users updatedUser = usersService.updateUser(users);
-
-            Map<String, String> response = new HashMap<>();
-            response.put("message", "Utilisateur mis à jour avec succès.");
-            response.put("userId", String.valueOf(updatedUser.getUserId()));
+            // ✅ Met à jour l'utilisateur et récupère le nouveau token
+            Map<String, String> response = usersService.updateUser(users, currentUserId);
 
             return ResponseEntity.ok(response);
         } catch (UsersServiceException e) {
-            Map<String, String> errorResponse = new HashMap<>();
-            errorResponse.put("error", e.getMessage());
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponse);
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of("error", e.getMessage()));
         } catch (Exception e) {
-            Map<String, String> errorResponse = new HashMap<>();
-            errorResponse.put("error", "Une erreur est survenue lors de la mise à jour de l'utilisateur.");
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Map.of("error", "Une erreur est survenue lors de la mise à jour de l'utilisateur."));
         }
     }
+
+
+
 
 
 

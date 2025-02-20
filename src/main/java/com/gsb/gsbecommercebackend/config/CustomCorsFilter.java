@@ -11,6 +11,8 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import java.util.Arrays;
 import java.util.List;
 
+/** Le filtre va s'executer en premier avec l'annoation order afin que Spring Security ne bloque pas les requêtes **/
+
 @Component
 @Order(Ordered.HIGHEST_PRECEDENCE)
 public class CustomCorsFilter extends CorsFilter {
