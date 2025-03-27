@@ -82,8 +82,7 @@ com.gsb.gsbecommercebackend
 │   │   ├── 📝 RolesDao.java
 │   ├── 📁 users
 │   │   ├── 📝 UsersDAO.java
-│   ├── 📁 wishlist
-│       ├── 📝 WishlistDao.java
+│ 
 
 ├── 📁 dto.views                    # DTOs pour les vues spécifiques (ex : résumés, statistiques)
 │   ├── 📝 OrderSummaryDTO.java
@@ -119,8 +118,7 @@ com.gsb.gsbecommercebackend
 │   ├── 📁 users
 │   │   ├── 📝 UsersService.java
 │   │   ├── 📝 UsersStatsService.java
-│   ├── 📁 wishlist
-│       ├── 📝 WishlistService.java
+│ 
 
 ├── 📁 utils                        # Fonctions utilitaires
 │   ├── 📝 PasswordEncoderUtils.java       # Encodage BCrypt
