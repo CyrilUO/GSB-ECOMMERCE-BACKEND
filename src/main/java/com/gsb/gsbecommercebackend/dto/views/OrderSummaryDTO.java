@@ -1,4 +1,4 @@
-package com.gsb.gsbecommercebackend.dto;
+package com.gsb.gsbecommercebackend.dto.views;
 
 import com.gsb.gsbecommercebackend.model.deliveryAddressClass.DeliveryAddress;
 import com.gsb.gsbecommercebackend.model.ordersClass.Order;

@@ -30,6 +30,7 @@ public class JwtService {
             throw new IllegalArgumentException("Impossible de générer le token : un des paramètres est null.");
         }
 
+        /* Nos claims sont ici un contenu du payload personalisé */
         return Jwts.builder()
                 .setSubject(userEmail)
                 .claim(CLAIM_ROLE, roleName)
@@ -49,12 +50,10 @@ public class JwtService {
                     .parseClaimsJws(token)
                     .getBody();
         } catch (Exception e) {
-            System.err.println("❌ Erreur lors du parsing du token : " + e.getMessage());
+            System.err.println("Erreur lors du parsing du token : " + e.getMessage());
             return null;
         }
     }
-
-
 
 
     public boolean validateToken(String token) {
@@ -90,10 +89,10 @@ public class JwtService {
     public String extractUserRole(String token) {
         try {
             Claims claims = parser.parseClaimsJws(token).getBody();
-            return claims.get(CLAIM_ROLE, String.class); // Extraire le rôle
+            return claims.get(CLAIM_ROLE, String.class); // Extraction du role depuis les claims
         } catch (JwtException | IllegalArgumentException e) {
             System.err.println("Erreur lors de l'extraction du rôle : " + e.getMessage());
-            return null; // Retourner `null` si le rôle n'est pas présent ou en cas d'erreur
+            return null;
         }
     }
 
@@ -102,7 +101,7 @@ public class JwtService {
             return parser.parseClaimsJws(token).getBody().get(claimKey, String.class);
         } catch (JwtException | IllegalArgumentException e) {
             System.err.println("Erreur lors de l'extraction de l'ID : " + e.getMessage());
-            return null; // Retourner `null` si le rôle n'est pas présent ou en cas d'erreur
+            return null;
         }
     }
 }

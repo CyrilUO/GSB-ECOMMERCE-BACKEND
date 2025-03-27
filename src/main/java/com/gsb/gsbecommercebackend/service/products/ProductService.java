@@ -16,7 +16,12 @@ public class ProductService {
     private final ProductDAO productDAO;
 
     public ProductService(ProductDAO productDAO) {
+
         this.productDAO = productDAO;
+    }
+
+    public void deleteProduct(int id){
+        productDAO.deleteProduct(id);
     }
 
     public List<Product> getAllProducts() throws Exception {
@@ -34,14 +39,13 @@ public class ProductService {
         return productDAO.updateProduct(product);
     }
 
-    public void deleteProduct(int id){
-        productDAO.deleteProduct(id);
-    }
 
 
     public List<Map<String, Object>> getCurrentProductStock() {
         return productDAO.getCurrentProductStock();
     }
+
+
 
     public Product getProductById(int id) {
         return productDAO.getProductById(id);

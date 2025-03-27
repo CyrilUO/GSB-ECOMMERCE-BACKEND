@@ -15,14 +15,19 @@ import java.util.Map;
 import static com.gsb.gsbecommercebackend.constant.AppConstants.ProductDataSource.*;
 
 /* Création du productDAO à l'initialisation du projet (Spring-Containeur)*/
+
 @Repository
 public class ProductDAO {
 
     private final JdbcTemplate jdbcTemplate;
 
-    @Autowired
     public ProductDAO(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
+    }
+
+    public void deleteProduct(int id) {
+        String sql = "DELETE FROM " + PRODUCT_TABLE + " WHERE " + PRODUCT_ID + " = ?";
+        jdbcTemplate.update(sql, id);
     }
 
     public List<Product> getAllProducts() {
@@ -48,10 +53,7 @@ public class ProductDAO {
         return product;
     }
 
-    public void deleteProduct(int id) {
-        String sql = "DELETE FROM " + PRODUCT_TABLE + " WHERE " + PRODUCT_ID + " = ?";
-        jdbcTemplate.update(sql, id);
-    }
+
 
 
     // Ce qui est couteux c'est la recerche
@@ -123,4 +125,5 @@ public class ProductDAO {
         String sql = "SELECT " + PRODUCT_STOCK + " FROM " + PRODUCT_TABLE + " WHERE " + PRODUCT_ID + " = ?";
         return jdbcTemplate.queryForObject(sql, new Object[]{productId}, Integer.class);
     }
+
 }

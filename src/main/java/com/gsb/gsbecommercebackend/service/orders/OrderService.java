@@ -6,7 +6,7 @@ import com.gsb.gsbecommercebackend.dao.orders.OrderDAO;
 import com.gsb.gsbecommercebackend.dao.orderedItem.OrderedItemDAO;
 import com.gsb.gsbecommercebackend.dao.products.ProductDAO;
 import com.gsb.gsbecommercebackend.dao.users.UsersDAO;
-import com.gsb.gsbecommercebackend.dto.OrderSummaryDTO;
+import com.gsb.gsbecommercebackend.dto.views.OrderSummaryDTO;
 import com.gsb.gsbecommercebackend.model.ordersClass.Order;
 import com.gsb.gsbecommercebackend.model.orderedItemClass.OrderedItem;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -49,7 +49,6 @@ public class OrderService {
             throw new RuntimeException("Erreur : orderId invalide !");
         }
 
-        // Pour chaque item dans des items_ordered on boucle et applique la logique
         for (OrderedItem item : orderedItems) {
 
             int currentStock = productDAO.getCurrentStockById(item.getProductId());

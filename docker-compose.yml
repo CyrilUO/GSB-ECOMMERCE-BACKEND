@@ -6,24 +6,36 @@ services:
     container_name: gsb_backend
     ports:
       - "8080:8080"
+    volumes:
+      - .:/app
+      - ~/.m2:/root/.m2 # Cache des dépendances Maven pour accélérer les builds
     environment:
-      - SPRING_DATASOURCE_URL=jdbc:mysql://db:3306/gsb_ecommerce?useSSL=false
+      - SPRING_DATASOURCE_URL=jdbc:mysql://db:3306/gsb_db_ecommerce?useSSL=false
       - SPRING_DATASOURCE_USERNAME=root
       - SPRING_DATASOURCE_PASSWORD=root
     networks:
-      - gsb-network
+      - gsb_shared_network
+    depends_on:
+      - db
 
   db:
     image: mysql:8
     container_name: gsb_db
+    restart: always # Redémarre MySQL en cas de crash
     environment:
       MYSQL_ROOT_PASSWORD: root
       MYSQL_DATABASE: gsb_db_ecommerce
     ports:
       - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql  # 🔹 Rend les données MySQL persistantes
+      - ./sql:/docker-entrypoint-initdb.d  # 🔹 Charge un script SQL initial au démarrage
     networks:
-      - gsb-network
+      - gsb_shared_network
 
 networks:
-  gsb-network:
-    driver: bridge
+  gsb_shared_network:
+    external: true
+
+volumes:
+  mysql_data:  # 🔹 Volume persistant pour éviter de perdre les données MySQL

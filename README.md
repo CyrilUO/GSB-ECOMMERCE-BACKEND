@@ -18,7 +18,7 @@ Bienvenue dans le backend du projet **GSB E-Commerce**, une application dévelop
 - 🛠️ **MySQL Drivers** : Pilote JDBC pour la connexion à une base de données MySQL.
 
 
-- 📦 **Docker** : Conteneurisation pour le déploiement.
+- 📦 **Docker** : Conteneurisation pour le déploiement. Non fonctionnelle sur la v1 du projet
 
 
 ---
@@ -26,56 +26,122 @@ Bienvenue dans le backend du projet **GSB E-Commerce**, une application dévelop
 ## 📂 **Architecture du Projet**
 ```plaintext
 com.gsb.gsbecommercebackend
-├── 📁 authentication
+├── 📁 authentication                  # Gestion de la sécurité et de l'authentification JWT
 │   ├── 📁 config
-│   │   ├── 📝 SecurityConfig.java         // Configuration de Spring Security
-│   │   ├── 📝 CorsConfig.java             // Configuration des règles CORS
-│   │   ├── 📝 CustomCorsFilter.java       // Filtre personnalisé pour CORS
+│   │   ├── 📝 SecurityConfig.java         # Configuration de Spring Security (authentification, autorisations)
+│   │   ├── 📝 CorsConfig.java             # Déclaration des règles CORS globales
+│   │   ├── 📝 CustomCorsFilter.java       # Filtre personnalisé pour affiner les règles CORS
 │   ├── 📁 filter
-│   │   ├── 📝 JwtAuthenticationFilter.java // Filtre d'authentification JWT
+│   │   ├── 📝 JwtAuthenticationFilter.java # Interception des requêtes pour authentifier via JWT
 │   ├── 📁 dto
-│   │   ├── 📝 AuthRequest.java            // DTO pour les requêtes d'authentification
+│   │   ├── 📝 AuthRequest.java            # DTO pour encapsuler les données de login
 │   ├── 📁 service
-│       ├── 📝 JwtService.java             // Service pour la gestion des tokens JWT
-│
-├── 📁 constant
-│   ├── 📝 AppConstants.java               // Constantes globales
-│
-├── 📁 controller
-│   ├── 📝 AuthController.java             // Contrôleur pour l'authentification
-│   ├── 📝 OrderController.java            // Gestion des commandes
-│   ├── 📝 ProductController.java          // Gestion des produits
-│   ├── 📝 UsersController.java            // Gestion des utilisateurs
-│
-├── 📁 dao
-│   ├── 📝 OrderDAO.java                   // DAO pour les commandes
-│   ├── 📝 OrderedItemDAO.java             // DAO pour les articles commandés
-│   ├── 📝 ProductDAO.java                 // DAO pour les produits
-│   ├── 📝 UsersDAO.java                   // DAO pour les utilisateurs
-│
-├── 📁 model
+│       ├── 📝 JwtService.java             # Génération, validation et parsing des tokens JWT
+
+├── 📁 config                          # Autres configurations transversales
+│   ├── 📝 CorsConfig.java                # Fichier de config global pour CORS
+│   ├── 📝 CustomCorsFilter.java          # Implémentation d’un filtre spécifique
+
+├── 📁 constant                       # Constantes globales du projet
+│   ├── 📝 AppConstants.java              # Clés, chaînes réutilisables
+│   ├── 📝 OrdersConstant.java            # Constantes spécifiques aux commandes
+
+├── 📁 controller                     # Couche contrôleur (REST API)
+│   ├── 📁 deliveryAddress
+│   │   ├── 📝 DeliveryAddressController.java # Contrôleur pour les adresses de livraison
+│   ├── 📁 orders
+│   │   ├── 📝 OrderAnalyticsController.java  # Statistiques/rapports sur les commandes
+│   │   ├── 📝 OrderCRUDController.java       # CRUD des commandes
+│   ├── 📁 products
+│   │   ├── 📝 ProductAnalyticsController.java # Statistiques sur les produits
+│   │   ├── 📝 ProductCRUDController.java      # CRUD des produits
+│   ├── 📁 roles
+│   │   ├── 📝 RolesController.java            # Endpoints pour la gestion des rôles
+│   ├── 📁 users
+│   │   ├── 📝 UsersAnalyticsController.java   # Statistiques sur les utilisateurs
+│   │   ├── 📝 UsersCRUDController.java        # CRUD des utilisateurs
+
+├── 📁 customExceptions              # Gestion des exceptions personnalisées
+│   ├── 📁 orders
+│   │   ├── 📝 OrderCreationException.java     # Exception spécifique à la création d'une commande
+│   ├── 📁 users
+│   │   ├── 📝 DaoException.java               # Exception générique DAO côté utilisateurs
+│   │   ├── 📝 UsersServiceException.java      # Exception niveau service utilisateurs
+
+├── 📁 dao                           # DAO : accès direct à la base de données
+│   ├── 📁 deliveryAddress
+│   │   ├── 📝 DeliveryAddressDAO.java
+│   ├── 📁 orderedItem
+│   │   ├── 📝 OrderedItemDAO.java
+│   ├── 📁 orders
+│   │   ├── 📝 OrderAnalyticsDAO.java         # Requêtes analytiques
+│   │   ├── 📝 OrderDAO.java                  # CRUD commandes
+│   ├── 📁 products
+│   │   ├── 📝 ProductDAO.java
+│   ├── 📁 roles
+│   │   ├── 📝 RolesDao.java
+│   ├── 📁 users
+│   │   ├── 📝 UsersDAO.java
+│   ├── 📁 wishlist
+│       ├── 📝 WishlistDao.java
+
+├── 📁 dto.views                    # DTOs pour les vues spécifiques (ex : résumés, statistiques)
+│   ├── 📝 OrderSummaryDTO.java
+
+├── 📁 model                        # Entités métier (données persistées)
 │   ├── 📁 builder
-│   │   ├── 📝 ProductBuilder.java         // Builder pour les produits
-│   │   ├── 📝 UsersBuilder.java           // Builder pour les utilisateurs
-│   ├── 📝 Order.java                      // Modèle pour les commandes
-│   ├── 📝 OrderedItem.java                // Modèle pour les articles commandés
-│   ├── 📝 Product.java                    // Modèle pour les produits
-│   ├── 📝 Users.java                      // Modèle pour les utilisateurs
-│
-├── 📁 service
-│   ├── 📝 OrderService.java               // Logique métier pour les commandes
-│   ├── 📝 ProductService.java             // Logique métier pour les produits
-│   ├── 📝 UsersService.java               // Logique métier pour les utilisateurs
-│
-├── 📁 utils
-│   ├── 📝 PasswordEncoderUtils.java       // Utilitaire pour l'encodage des mots de passe
-│
-├── 📝 GsbEcommerceBackendApplication.java // Point d'entrée principal de l'application
-│
+│   │   ├── 📝 ProductBuilder.java         # Création de produits via un builder
+│   │   ├── 📝 UsersBuilder.java           # Création d’utilisateurs via un builder
+│   ├── 📁 deliveryAddressClass
+│   │   ├── 📝 DeliveryAddress.java
+│   ├── 📁 orderedItemClass
+│   │   ├── 📝 OrderedItem.java
+│   ├── 📁 ordersClass
+│   │   ├── 📝 Order.java
+│   ├── 📁 productsClass
+│   │   ├── 📝 Product.java
+│   ├── 📁 rolesClass
+│   │   ├── 📝 Roles.java
+│   ├── 📁 usersClass
+│       ├── 📝 CustomUserDetails.java       # Implémentation UserDetails pour Spring Security
+│       ├── 📝 Users.java
+
+├── 📁 service                      # Logique métier (business layer)
+│   ├── 📁 deliveryAddress
+│   │   ├── 📝 DeliveryAddressService.java
+│   ├── 📁 orders
+│   │   ├── 📝 OrderAnalyticsService.java
+│   │   ├── 📝 OrderService.java
+│   ├── 📁 products
+│   │   ├── 📝 ProductService.java
+│   ├── 📁 roles
+│   │   ├── 📝 RolesService.java
+│   ├── 📁 users
+│   │   ├── 📝 UsersService.java
+│   │   ├── 📝 UsersStatsService.java
+│   ├── 📁 wishlist
+│       ├── 📝 WishlistService.java
+
+├── 📁 utils                        # Fonctions utilitaires
+│   ├── 📝 PasswordEncoderUtils.java       # Encodage BCrypt
+│   ├── 📝 SwaggerConfig.java              # Configuration de la doc Swagger
+
+├── 📝 GsbEcommerceBackendApplication.java # Point d’entrée de l’application Spring Boot
+
 ├── 📁 resources
-│   ├── 📁 static                          // Contient les ressources statiques (si nécessaire)
-│   ├── 📁 templates                       // Contient les templates (si nécessaire)
-│   ├── 📝 application.yaml                // Configuration de l'application (base de données, port)
+│   ├── 📁 static                          # Contenu statique (images, JS, CSS...)
+│   ├── 📁 templates                       # Templates Thymeleaf (si besoin)
+│   ├── 📝 application.yaml                # Configuration principale
+│   ├── 📝 application-test.yaml           # Config spécifique aux tests
+│   ├── 📝 data.sql                        # Données d'exemple pour l'initialisation
+│   ├── 📝 schema.sql                      # Création du schéma (si utilisée)
+│   ├── 📝 views.sql                       # Script SQL pour créer les vues
+
+├── 📁 test
+│   ├── 📁 dao
+│   │   ├── 📝 OrderDAOTest.java           # Tests unitaires du DAO commandes
+│   │   ├── 📝 OrderedItemDAOTest.java     # Tests unitaires du DAO des articles commandés
+│   ├── 📝 GsbEcommerceBackendApplicationTests.java # Tests d’intégration de l’application
 
 ```
 ---
@@ -92,24 +158,38 @@ com.gsb.gsbecommercebackend
    ```bash
    git clone https://github.com/CyrilUO/GSB-ECOMMERCE-BACKEND.git
    cd gsbEcommerceBackend
+   
+2. **🛢️ Configurez votre base de données MySQL**
 
-2. **🛢️️Configurez votre base de données:**
+- Jouez dans l'ordre les scripts situés dans *src / main / ressources*
+  - schema.sql   -- crée les tables
+  - views.sql    -- crée les vues SQL personnalisées
+  - data.sql     -- insère des données initiales
+
+3. **🔑️ Configurez la connexion à la base**
     ```bash
     spring:
-    datasource:
-    url: jdbc:mysql://localhost:<default:3306>/<your-db-name>
-        username : <default : root>
-        password: <default : root>
-        driver-class-name: com.mysql.cj.jdbc.Driver
-3. **🚀 Lancer l'application**
-    ```bash 
+     datasource:
+       url: jdbc:mysql://localhost:3306/gsb_db_ecommerce
+       username: root
+       password: root
+       driver-class-name: com.mysql.cj.jdbc.Driver
+
+4. **🚀 Configurez la clef JWT**
+- Au lancement de l'application, une clé base64 sera générée automatiquement dans la console (via JwtKeyGeneratorUtils) 
+- Inserez-là dans sa variable Secret ou dans un fichier .env
+
+5. **Lancez l'app**
+
+   ```bash 
    mvn spring-boot:run
    
-4. **🐋 Ou avec Docker**
+6. **🐋 Optionnel : Docker (non fonctionnel pour le moment)
+   **
    ```bash
    docker-compose up --build
 
-5. **♻️ Clonez la partie front du projet et lire le README associé**
+7. **♻️ Clonez la partie front du projet et lire le README associé**
     ```bash
     git clone https://github.com/CyrilUO/GSB-ECOMMERCE-FRONT
 ---

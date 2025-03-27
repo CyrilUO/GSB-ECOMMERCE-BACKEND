@@ -82,17 +82,14 @@ public class UsersCRUDController {
 
     @PostMapping("/users")
     public ResponseEntity<Users> addUser(@RequestBody Users users) {
-        System.out.println("Requête reçue pour POST /users avec les données : " + users);
-
         try {
-            // Mapper le roleId du payload JSON à l'objet Roles
-            if (users.getRole() == null && users.getRoleId() != 0) {
+            if (users.getRole() == null) {
                 Roles role = new Roles();
-                role.setRoleId(users.getRoleId()); // Initialiser l'objet Roles avec le roleId
-                users.setRole(role); // Associer l'objet Roles à l'utilisateur
+                role.setRoleId(3);
+                role.setRoleName("medical-employee");
+                users.setRole(role);
             }
 
-            // Appeler le service pour ajouter l'utilisateur
             Users newUser = usersService.addUser(users);
 
             if (newUser != null) {
@@ -132,7 +129,7 @@ public class UsersCRUDController {
                 users.setRole(role);
             }
 
-            // ✅ Met à jour l'utilisateur et récupère le nouveau token
+            //  Met à jour l'utilisateur et récupère le nouveau token
             Map<String, String> response = usersService.updateUser(users, currentUserId);
 
             return ResponseEntity.ok(response);

@@ -23,18 +23,14 @@ public class OrderAnalyticsController {
 
     @GetMapping("/orders/stats/daily-orders")
     public ResponseEntity<List<Map<String, Object>>> getDailyOrderAmount() {
-        // [{"orders" : {"items : "products"
-        // }}]
+
         try {
-            // Appelle le service pour récupérer les données
             List<Map<String, Object>> dailyCounts = orderAnalyticsService.getDailyOrderAmount();
 
-            // Vérifie si les données sont vides
             if (dailyCounts == null || dailyCounts.isEmpty()) {
                 return ResponseEntity.noContent().build();
             }
 
-            // Retourne les résultats avec un statut HTTP 200 (OK)
             return ResponseEntity.ok(dailyCounts);
         } catch (Exception e) {
             e.printStackTrace();

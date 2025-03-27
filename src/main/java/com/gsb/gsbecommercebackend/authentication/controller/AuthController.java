@@ -12,7 +12,6 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
@@ -29,40 +28,39 @@ public class AuthController {
         this.jwtService = jwtService;
         this.usersService = usersService;
         this.authenticationManager = authenticationManager;
-        this.passwordEncoder = passwordEncoder; // ✅ Injecté proprement par Spring
+        this.passwordEncoder = passwordEncoder;
     }
     @PostMapping("/login")
     public String login(@RequestBody AuthRequest authRequest) {
         try {
-            System.out.println("🔹 Tentative de connexion avec l'email : " + authRequest.getUserEmail());
+            System.out.println("Tentative de connexion avec l'email : " + authRequest.getUserEmail());
 
-            // ✅ 1. Récupérer les détails utilisateur
+            // récupération du détail utilisateur via userdetails
             UserDetails userDetails = usersService.loadUserByUsername(authRequest.getUserEmail());
 
-            System.out.println("🔍 Mot de passe utilisateur fourni : " + authRequest.getUserPassword());
-            System.out.println("🔍 Hash en base de données : " + userDetails.getPassword());
+            System.out.println(" Mot de passe utilisateur fourni : " + authRequest.getUserPassword());
+            System.out.println(" Hash en base de données : " + userDetails.getPassword());
 
-            // ✅ 2. Vérifier si le mot de passe correspond
             if (!passwordEncoder.matches(authRequest.getUserPassword(), userDetails.getPassword())) {
-                System.out.println("🚨 Mot de passe incorrect !");
+                System.out.println("Mot de passe incorrect !");
                 throw new BadCredentialsException("Identifiants invalides");
             }
 
-            System.out.println("✅ Mot de passe correct, authentification en cours...");
+            System.out.println("Mot de passe correct, authentification en cours...");
 
-            // ✅ 3. Authentifier l'utilisateur avec SecurityContext
+            // Authentification de l'utilisateur avec SecurityContext
             UsernamePasswordAuthenticationToken authenticationToken =
                     new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
             SecurityContextHolder.getContext().setAuthentication(authenticationToken);
 
-            // ✅ 4. Récupérer l'ID utilisateur
+            // Récupéreration de l'ID utilisateur (customuser détail = surcharge du userDetails)
             CustomUserDetails customUserDetails = (CustomUserDetails) userDetails;
             int userId = customUserDetails.getUserId();
             String userRole = customUserDetails.getAuthorities().iterator().next().getAuthority().replace("ROLE_", "");
 
-            System.out.println("🔹 Connexion réussie pour l'utilisateur ID : " + userId + ", Rôle : " + userRole);
+            System.out.println("Connexion réussie pour utilisateur ID : " + userId + ", Rôle : " + userRole);
 
-            // ✅ 5. Générer le token mis à jour
+            // Généreration du token mis à jour le token mis à jour
             return jwtService.generateTokenWithEmailAndId(
                     String.valueOf(userId),
                     userDetails.getUsername(),
@@ -70,10 +68,10 @@ public class AuthController {
             );
 
         } catch (BadCredentialsException e) {
-            System.out.println("❌ Identifiants incorrects !");
+            System.out.println("Identifiants incorrects !");
             throw new BadCredentialsException("Identifiants invalides", e);
         } catch (UsernameNotFoundException e) {
-            System.out.println("❌ Utilisateur non trouvé !");
+            System.out.println("Utilisateur non trouvé !");
             throw new RuntimeException("Utilisateur introuvable", e);
         }
     }

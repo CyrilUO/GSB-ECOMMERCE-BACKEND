@@ -26,50 +26,31 @@ public class OrderDAOTest {
 
     @BeforeEach
     public void setupDatabase() {
-        // Supprimer les données existantes pour éviter les conflits
         jdbcTemplate.execute("DELETE FROM orders");
-        jdbcTemplate.execute("DELETE FROM users");
         jdbcTemplate.execute("DELETE FROM delivery_address");
+        jdbcTemplate.execute("DELETE FROM users");
+        jdbcTemplate.execute("DELETE FROM roles");
 
-        // Insérer un utilisateur fictif
-        jdbcTemplate.update("INSERT INTO users (user_name, user_surname, user_email, user_password, user_role) " +
-                "VALUES (?, ?, ?, ?, ?)", "John", "Doe", "john.doe@example.com", "password123", "USER");
+        jdbcTemplate.update("INSERT INTO roles (role_id, role_name) VALUES (1, 'admin')");
 
-        // Insérer une adresse fictive
-        jdbcTemplate.update("INSERT INTO delivery_address (delivery_address_city, delivery_address_street, " +
-                        "delivery_address_zip_code, delivery_address_country) VALUES (?, ?, ?, ?)",
+        jdbcTemplate.update("INSERT INTO users (user_id, user_name, user_surname, user_email, user_password, role_id) " +
+                "VALUES (1, ?, ?, ?, ?, ?)", "John", "Doe", "john.doe@example.com", "password123", 1);
+
+        jdbcTemplate.update("INSERT INTO delivery_address (delivery_address_id, delivery_address_city, delivery_address_street, " +
+                        "delivery_address_zip_code, delivery_address_country) VALUES (1, ?, ?, ?, ?)",
                 "Paris", "123 Rue de Paris", 75000, "France");
     }
 
     @Test
     public void testCreateOrder() {
-        // Préparer l'objet Order
         Order order = new Order();
-        order.setUserId(1); // ID utilisateur fictif inséré
-        order.setDeliveryAddressId(1); // ID adresse fictive insérée
+        order.setUserId(1);
+        order.setDeliveryAddressId(1);
         order.setOrderStatus("En attente");
         order.setOrderTotalPrice(150.00f);
 
-        // Tester l'insertion
         int generatedId = orderDAO.createOrder(order);
         assertTrue(generatedId > 0, "L'ID généré doit être supérieur à 0");
     }
-
-//    @Test
-//    public void testGetOrderById() {
-//        // Insérer une commande directement
-//        jdbcTemplate.update(
-//                "INSERT INTO orders (user_id, order_status, order_total_price, delivery_address_id) VALUES (?, ?, ?, ?)",
-//                1, "En attente", 150.00F, 1
-//        );
-//
-//        // Récupérer la commande
-//        Order order = orderDAO.getOrderById(1);
-//
-//        // Assertions
-//        assertThat(order).isNotNull();
-//        assertThat(order.getUserId()).isEqualTo(1);
-//        assertThat(order.getOrderStatus()).isEqualTo("En attente");
-//        assertThat(order.getOrderTotalPrice()).isEqualTo(150.00F);
-//    }
 }
+

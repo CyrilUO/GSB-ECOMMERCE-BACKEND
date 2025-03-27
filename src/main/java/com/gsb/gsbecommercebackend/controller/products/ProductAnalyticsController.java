@@ -1,11 +1,11 @@
 package com.gsb.gsbecommercebackend.controller.products;
 
+import com.gsb.gsbecommercebackend.model.productsClass.Product;
+import com.gsb.gsbecommercebackend.model.usersClass.Users;
 import com.gsb.gsbecommercebackend.service.products.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Map;
@@ -27,4 +27,7 @@ public class ProductAnalyticsController {
             return ResponseEntity.status(500).body(null);
         }
     }
+
 }
+
+

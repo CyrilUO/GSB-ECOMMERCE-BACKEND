@@ -1,8 +1,7 @@
 package com.gsb.gsbecommercebackend.dao.orders;
 
 import com.gsb.gsbecommercebackend.customExceptions.orders.OrderCreationException;
-import com.gsb.gsbecommercebackend.customExceptions.users.DaoException;
-import com.gsb.gsbecommercebackend.dto.OrderSummaryDTO;
+import com.gsb.gsbecommercebackend.dto.views.OrderSummaryDTO;
 import com.gsb.gsbecommercebackend.model.deliveryAddressClass.DeliveryAddress;
 import com.gsb.gsbecommercebackend.model.ordersClass.Order;
 import com.gsb.gsbecommercebackend.model.usersClass.Users;

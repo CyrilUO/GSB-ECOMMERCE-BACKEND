@@ -17,6 +17,19 @@ public class ProductCRUDController {
     @Autowired
     private ProductService productService;
 
+    @DeleteMapping("/products/{id}")
+    public ResponseEntity<String> deleteProduct(@PathVariable int id) {
+        System.out.println("Requête reçue pour DELETE /products/" + id);
+        try {
+            productService.deleteProduct(id);
+            System.out.println("Produit supprimé avec succès : ID = " + id);
+            return ResponseEntity.ok("Produit supprimé avec succès.");
+        } catch (Exception e) {
+            System.out.println("Erreur lors de la suppression du produit : " + e.getMessage());
+            return ResponseEntity.status(500).body("Erreur lors de la suppression du produit.");
+        }
+    }
+
 
     @GetMapping("/products")
     public ResponseEntity<List<Product>> getAllProducts() {
@@ -87,16 +100,5 @@ public class ProductCRUDController {
             return ResponseEntity.status(404).body(null);
         }
     }
-    @DeleteMapping("/products/{id}")
-    public ResponseEntity<String> deleteProduct(@PathVariable int id) {
-        System.out.println("Requête reçue pour DELETE /products/" + id);
-        try {
-            productService.deleteProduct(id);
-            System.out.println("Produit supprimé avec succès : ID = " + id);
-            return ResponseEntity.ok("Produit supprimé avec succès.");
-        } catch (Exception e) {
-            System.out.println("Erreur lors de la suppression du produit : " + e.getMessage());
-            return ResponseEntity.status(500).body("Erreur lors de la suppression du produit.");
-        }
-    }
+
 }

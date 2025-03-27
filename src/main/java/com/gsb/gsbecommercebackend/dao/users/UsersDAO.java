@@ -102,7 +102,6 @@ public class UsersDAO {
                 "VALUES (?, ?, ?, ?, ?)";
 
         try {
-            // Vérifie que le rôle est correctement initialisé
             if (users.getRole() == null || users.getRole().getRoleId() == 0) {
                 throw new DaoException("Rôle non fourni ou invalide.");
             }

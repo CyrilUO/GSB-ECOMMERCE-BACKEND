@@ -34,8 +34,8 @@ public class OrderAnalyticsDAO {
 
         return jdbcTemplate.query(sql, (rs, rowNum) -> {
             Map<String, Object> row = new HashMap<>();
-            row.put("orderCreatedAt", rs.getDate("orderCreatedAt")); // Corrigé
-            row.put("orderCount", rs.getInt("orderCount"));               // Corrigé
+            row.put("orderCreatedAt", rs.getDate("orderCreatedAt"));
+            row.put("orderCount", rs.getInt("orderCount"));
             return row;
         });
     }
