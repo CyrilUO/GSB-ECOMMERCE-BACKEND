@@ -251,6 +251,13 @@ com.gsb.gsbecommercebackend
 > ➡️ /api/products/**
 4. **Commandes**
 > ➡️ /api/orders/**
+5. **Adresses**
+> ➡️ /api/delivery-address/**
+6. **Roles**
+> /api/roles/** 
+
+**Visualiser l'ensemble des endpoints sur Swagger**
+> http://localhost:8080/swagger-ui/index.html
 
 --- 
 
