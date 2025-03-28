@@ -175,7 +175,39 @@ com.gsb.gsbecommercebackend
 
 4. **🚀 Configurez la clef JWT**
 - Au lancement de l'application, une clé base64 sera générée automatiquement dans la console (via JwtKeyGeneratorUtils) 
-- Inserez-là dans sa variable Secret ou dans un fichier .env
+- Inserez-là dans sa variable Secret ou dans un fichier .env authentication>service>jwtservice
+- Si cela ne marche pas du à la nécéssité d'avoir une clé avant la compilation, vous pouvez run ce script pour obtenir une clef (Python)
+    ```bash
+    import secrets
+    import base64
+    
+    raw_key = secrets.token_bytes(32)
+    
+    b64_key = base64.b64encode(raw_key).decode('utf-8')
+    
+    print("Clé brute :", raw_key)
+    print("Clé base64 :", b64_key)
+
+    ```
+- Ou en java 
+    ```bash 
+    import java.security.SecureRandom;
+    import java.util.Base64;
+    
+    public class SecretKeyGenerator {
+    
+        public static void main(String[] args) {
+            byte[] key = new byte[32];
+    
+            SecureRandom secureRandom = new SecureRandom();
+            secureRandom.nextBytes(key);
+    
+            String base64Key = Base64.getEncoder().encodeToString(key);
+    
+            System.out.println("Clé  : " + base64Key);
+        }
+    }
+    ```
 
 5. **Lancez l'app**
 
