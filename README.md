@@ -147,6 +147,7 @@ com.gsb.gsbecommercebackend
 
 - **Java 17+** : Le projet est basé sur Spring Boot 3.x, nécessitant Java 17 ou une version supérieure.
 - **MySQL** : Base de données utilisée pour stocker les données des utilisateurs et des produits.
+- **mysql-connector** : Dépendance présente dans le fichier pom.xml. Ce pilote est nécessaire pour permettre la communication avec la DB
 - **Maven** : Gestionnaire de dépendances.
 
 ---
