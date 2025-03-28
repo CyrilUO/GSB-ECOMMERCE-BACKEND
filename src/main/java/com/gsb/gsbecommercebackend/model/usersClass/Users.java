@@ -11,11 +11,11 @@ public class Users {
     private String userSurname;
     private String userEmail;
     private String userPassword;
-    private int roleId; // Champ temporaire pour mapper directement le roleId du payload
+    private int roleId;
     private LocalDateTime userDateCreation;
     private LocalDateTime userModifiedAt;
 
-    private Roles role; // Relation avec la classe Roles
+    private Roles role;
 
     public Users(){};
 
@@ -29,7 +29,7 @@ public class Users {
 
 
     public int getRoleId() {
-        return this.role != null ? this.role.getRoleId() : this.roleId; // Si rôle est null, retournez roleId
+        return this.role != null ? this.role.getRoleId() : this.roleId;
     }
 
     public void setRoleId(int roleId) {

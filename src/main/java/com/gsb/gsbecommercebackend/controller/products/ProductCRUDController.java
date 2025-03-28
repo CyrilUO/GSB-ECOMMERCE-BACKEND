@@ -53,6 +53,12 @@ public class ProductCRUDController {
     @PostMapping("/products")
     public ResponseEntity<Product> addProduct(@RequestBody Product product) {
         System.out.println("Requête reçue pour POST /products avec le produit : " + product);
+
+        if (product == null){
+            return ResponseEntity
+                    .badRequest()
+                    .body(null);
+        }
         try {
             Product newProduct = productService.addProduct(product);
             if (newProduct != null) {
@@ -77,7 +83,7 @@ public class ProductCRUDController {
         if (product != null) {
             return ResponseEntity.ok(product);
         } else {
-            return ResponseEntity.notFound().build(); // Retourne un 404 si le produit est introuvable
+            return ResponseEntity.notFound().build();
         }
     }
 

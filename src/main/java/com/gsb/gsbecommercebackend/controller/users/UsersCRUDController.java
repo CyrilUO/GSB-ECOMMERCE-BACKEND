@@ -83,6 +83,12 @@ public class UsersCRUDController {
     @PostMapping("/users")
     public ResponseEntity<Users> addUser(@RequestBody Users users) {
         try {
+            if (users == null){
+                return ResponseEntity
+                        .badRequest()
+                        .body(null);
+            }
+
             if (users.getRole() == null) {
                 Roles role = new Roles();
                 role.setRoleId(3);
@@ -111,7 +117,7 @@ public class UsersCRUDController {
                                                           @RequestBody Map<String, Object> payload,
                                                           @RequestHeader("Authorization") String token) {
         try {
-            // Extraire l'ID utilisateur depuis le token
+            // Extraction du token et parsing pour récupérer l'id qui ser ensuite utilisé pour vérification si le role a été modifié
             String jwt = token.replace("Bearer ", "");
             int currentUserId = Integer.parseInt(jwtService.extractClaim(jwt, "userId"));
             System.out.println("Id de l'utilisateur envoyant la requete" + currentUserId);
@@ -139,14 +145,6 @@ public class UsersCRUDController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Map.of("error", "Une erreur est survenue lors de la mise à jour de l'utilisateur."));
         }
     }
-
-
-
-
-
-
-
-
 
 
     @DeleteMapping("/users/{id}")

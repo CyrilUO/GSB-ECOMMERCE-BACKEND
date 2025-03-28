@@ -48,9 +48,6 @@ public class UsersService implements UserDetailsService {
         }
     }
 
-//    public Optional<Users>getUserSurname(String userName){
-//        try
-//    }
 
     public Optional<Users> getUserDataById(int userId) {
         try {
@@ -64,10 +61,10 @@ public class UsersService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String userEmail) throws UsernameNotFoundException {
-        System.out.println("🔍 Recherche utilisateur avec email : " + userEmail);
+        System.out.println("Recherche utilisateur avec email : " + userEmail);
         Users user = usersDAO.findByEmail(userEmail)
                 .orElseThrow(() -> new UsernameNotFoundException("Utilisateur non trouvé avec l'email : " + userEmail));
-        System.out.println("✅ Utilisateur trouvé : " + user.getUserEmail() + ", Rôle : " + user.getRole().getRoleName());
+        System.out.println("Utilisateur trouvé : " + user.getUserEmail() + ", Rôle : " + user.getRole().getRoleName());
         System.out.println("Password from database: " + user.getUserPassword() + " Email from database :" + user.getUserEmail());
         System.out.println("Loaded user with id: " + user.getUserId());
 
@@ -105,31 +102,29 @@ public class UsersService implements UserDetailsService {
         }
 
         Users existingUser = existingUserOptional.get();
-        System.out.println("🔍 ID utilisateur en mise à jour : " + users.getUserId());
-
-        // 🔹 Si aucun rôle n'est envoyé, conserver l'ancien rôle
+        System.out.println("ID utilisateur en mise à jour : " + users.getUserId());
 
 
-        System.out.println("🔍 Vérification : Ancien email = " + existingUser.getUserEmail());
-        System.out.println("🔍 Vérification : Nouveau email = " + users.getUserEmail());
 
-        System.out.println("🔍 Vérification : Ancien rôle = " + existingUser.getRole().getRoleName());
-        System.out.println("🔍 Vérification : Nouveau rôle = " + users.getRole().getRoleName());
+        System.out.println("érification : Ancien email = " + existingUser.getUserEmail());
+        System.out.println("Vérification : Nouveau email = " + users.getUserEmail());
+
+        System.out.println("Vérification : Ancien rôle = " + existingUser.getRole().getRoleName());
+        System.out.println("Vérification : Nouveau rôle = " + users.getRole().getRoleName());
 
         if (users.getRole() == null || users.getRole().getRoleId() == 0) {
-            System.out.println("⚠️ Aucun rôle envoyé, récupération de l'ancien rôle...");
+            System.out.println("Aucun rôle envoyé, récupération de l'ancien rôle...");
             users.setRole(existingUser.getRole());
         } else {
-            // 🔹 Récupérer le rôle en base pour récupérer `roleName`
-            System.out.println("🔍 Vérification : Récupération du rôle avec ID = " + users.getRole().getRoleId());
+            System.out.println("Vérification : Récupération du rôle avec ID = " + users.getRole().getRoleId());
             Optional<Roles> roleOptional = rolesDao.findById(users.getRole().getRoleId());
 
             if (roleOptional.isEmpty()) {
                 throw new UsersServiceException("Le rôle spécifié n'existe pas. ID: " + users.getRole().getRoleId());
             }
 
-            users.setRole(roleOptional.get());  // 🔹 Assigner le rôle avec `roleName` correctement récupéré
-            System.out.println("✅ Rôle trouvé et attribué : " + users.getRole().getRoleName());
+            users.setRole(roleOptional.get());
+            System.out.println("Rôle trouvé et attribué : " + users.getRole().getRoleName());
         }
 
 
@@ -137,26 +132,24 @@ public class UsersService implements UserDetailsService {
             if (users.getRole() != null && !existingUser.getRole().getRoleName().equals(users.getRole().getRoleName())) {
                 throw new UsersServiceException("Vous ne pouvez pas modifier votre propre rôle.");
             }
-            // ⚠️ S'assurer que le rôle est bien conservé
             users.setRole(existingUser.getRole());
         }
 
 
 
-        System.out.println("🔹 Ancien email : " + existingUser.getUserEmail());
-        System.out.println("🔹 Nouvel email : " + users.getUserEmail());
+        System.out.println("Ancien email : " + existingUser.getUserEmail());
+        System.out.println("Nouvel email : " + users.getUserEmail());
 
-        System.out.println("🔹 Ancien rôle avant mise à jour : " + existingUser.getRole().getRoleName());
-        System.out.println("🔹 Rôle envoyé dans la requête : " + (users.getRole() != null ? users.getRole().getRoleName() : "null"));
+        System.out.println("Ancien rôle avant mise à jour : " + existingUser.getRole().getRoleName());
+        System.out.println("Rôle envoyé dans la requête : " + (users.getRole() != null ? users.getRole().getRoleName() : "null"));
 
 
-        // 🔹 Ne pas re-hacher un mot de passe déjà haché
         if (users.getUserPassword() != null && !users.getUserPassword().isBlank()) {
-            if (!users.getUserPassword().startsWith("$2a$")) { // Vérifie si déjà haché
+            if (!users.getUserPassword().startsWith("$2a$")) { // Vérification si mdp deja haché si déjà haché
                 users.setUserPassword(passwordEncoder.encode(users.getUserPassword()));
             }
         } else {
-            users.setUserPassword(existingUser.getUserPassword()); // Garde l'ancien mot de passe
+            users.setUserPassword(existingUser.getUserPassword());
         }
 
         users.setUserName(users.getUserName() != null && !users.getUserName().isBlank()
@@ -170,10 +163,9 @@ public class UsersService implements UserDetailsService {
                 : existingUser.getUserEmail());
 
 
-        // 🔹 Mise à jour en base de données
+        // Mise à jour en base de données
         usersDAO.updateUser(users);
 
-        // 🔄 Recharger l'utilisateur après la mise à jour pour être sûr qu'il contient bien un rôle
         Users updatedUser = usersDAO.findById(users.getUserId()).orElseThrow(() ->
                 new UsersServiceException("Erreur lors du rechargement de l'utilisateur après mise à jour."));
 
@@ -181,7 +173,7 @@ public class UsersService implements UserDetailsService {
             throw new UsersServiceException("Le rôle de l'utilisateur est null après mise à jour !");
         }
 
-        System.out.println("✅ Rôle après mise à jour : " + updatedUser.getRole().getRoleName());
+        System.out.println("Rôle après mise à jour : " + updatedUser.getRole().getRoleName());
 
 
 
@@ -189,15 +181,14 @@ public class UsersService implements UserDetailsService {
         response.put("message", "Utilisateur mis à jour avec succès.");
         response.put("userId", String.valueOf(users.getUserId()));
 
-        // ✅ Générer un nouveau token uniquement pour l'utilisateur mis à jour
         if (currentUserId == users.getUserId()) {
             String newToken = jwtService.generateTokenWithEmailAndId(
                     String.valueOf(users.getUserId()),
                     users.getUserEmail(),
                     users.getRole().getRoleName()
             );
-            System.out.println("✅ Nouveau token généré après mise à jour : " + newToken);
-            System.out.println("📢 Claims du token : " + jwtService.parseTokenClaims(newToken));
+            System.out.println("Nouveau token généré après mise à jour : " + newToken);
+            System.out.println("Claims du token : " + jwtService.parseTokenClaims(newToken));
             response.put("newToken", newToken);
         }
 
@@ -205,8 +196,6 @@ public class UsersService implements UserDetailsService {
 
         return response;
     }
-
-
 
 
     public void deleteUser(int id) {
@@ -221,11 +210,6 @@ public class UsersService implements UserDetailsService {
         }
     }
 
-//    // Méthode utilitaire : trouver email par ID
-//    private String findEmailById(int userId) {
-//        return usersDAO.getUserNameByUserId(userId); // Méthode DAO pour récupérer l'utilisateur
-//    }
-
     public Optional<Users> findByEmail(String email) {
         return usersDAO.findByEmail(email);
     }
@@ -237,10 +221,5 @@ public class UsersService implements UserDetailsService {
             throw new RuntimeException("Erreur lors de la récupération des statistiques utilisateurs.", e);
         }
     }
-
-//    public Optional<Users> findById(int id) {
-//        return usersDAO.findById(id);
-//    }
-
 
 }

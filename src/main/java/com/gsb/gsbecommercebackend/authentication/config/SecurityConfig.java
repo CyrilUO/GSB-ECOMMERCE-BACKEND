@@ -55,7 +55,7 @@ public class SecurityConfig {
                         ).permitAll()
                         // Autoriser l'authentification
                         .requestMatchers("/auth/login").permitAll()
-                        // Sécuriser les endpoints API
+                        // Sécurisastion des endpoints API
                         .requestMatchers("/api/**").hasAnyRole(ADMIN, MEDICAL_EMPLOYEE, SALESPERSON)
                         // Tous les autres endpoints nécessitent une authentification
                         .anyRequest().authenticated()

@@ -34,14 +34,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         this.usersService = usersService;
     }
 
-    /**
-     * Création d'une logique de filtre
-     * @params :
-     * @return :
-     */
 
 
-    // CAN BE COMMENTED IF YOU WISH NOT TO USE SWAGGER
+
     private static final List<String> EXCLUDED_PATHS = List.of(
             "/v3/api-docs",
             "/v3/api-docs/**",
@@ -56,9 +51,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         String path = request.getRequestURI();
         return EXCLUDED_PATHS.stream().anyMatch(path::startsWith);
     }
-
-    // Comment till here
-
 
 
 
@@ -76,8 +68,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         if (token != null && token.startsWith("Bearer ")) {
             token = token.substring(7);
-            System.out.println("🔍 Token reçu : " + token);
-            System.out.println("📢 Claims du token : " + jwtService.parseTokenClaims(token));
+            System.out.println("Token reçu : " + token);
+            System.out.println("Token parsé: " + jwtService.parseTokenClaims(token));
 
 
             try {
@@ -95,7 +87,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                     var userDetails = usersService.loadUserByUsername(userEmail);
 
                     if (!userDetails.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_" + userRole))) {
-                        System.out.println("⚠️ Conflit entre rôle du token (" + userRole + ") et rôle en base (" + userDetails.getAuthorities() + ")");
+                        System.out.println("Conflit entre rôle du token (" + userRole + ") et rôle en base (" + userDetails.getAuthorities() + ")");
                         throw new RuntimeException("Rôle utilisateur modifié. Déconnexion requise.");
                     }
 
@@ -113,7 +105,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                     System.out.println("Role extraction depuis la méthode : " + userRole);
 
                     if (!userDetails.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_" + userRole))) {
-                        System.out.println("⚠️ Conflit entre rôle du token (" + userRole + ") et rôle en base (" + userDetails.getAuthorities() + ")");
+                        System.out.println("Conflit entre rôle du token (" + userRole + ") et rôle en base (" + userDetails.getAuthorities() + ")");
                         throw new RuntimeException("Rôle utilisateur modifié. Déconnexion requise.");
                     }
 

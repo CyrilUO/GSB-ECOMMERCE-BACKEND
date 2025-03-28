@@ -35,7 +35,7 @@ public class DeliveryAddressDAO {
             return jdbcTemplate.queryForObject(sql, String.class, addressId);
         } catch (EmptyResultDataAccessException e) {
             System.err.println("Aucune adresse trouvée avec l'ID : " + addressId);
-            return null; // Ou "Adresse inconnue"
+            return null;
         }
     }
 

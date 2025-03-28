@@ -15,16 +15,13 @@ public class PasswordEncoderUtils {
         PrintStream s = System.out;
 
         BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
-        String rawPassword = "Elen.Dbz";
-        String encodedPassword = encoder.encode(rawPassword);
-        System.out.println("Encoded password for 'password123': " + encodedPassword);
 
         List<String> passwords = new ArrayList<>();
         passwords.add("password123");
         passwords.add("admin1234");
         passwords.add("business1234");
         for (String password : passwords){
-            s.println(encoder.encode(password));
+            s.println("Password : " + password + "brut / password encodé : " + encoder.encode(password));
         }
     }
 
